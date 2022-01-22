@@ -2,15 +2,6 @@
 # Author: Haley Hunter-Zinck
 # Date: July 1, 2021
 
-# setup -----------------------
-
-# libraries
-library(synapser)
-synLogin()
-library(glue)
-library(dplyr)
-library(yaml)
-
 # global variables ------------------------------------
 
 config <- read_yaml("config.yaml")

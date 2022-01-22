@@ -2,15 +2,6 @@
 # Authors: Alyssa Acebedo, Xindi Guo, Haley Hunter-Zinck
 # Date: June 7, 2021
 
-# setup ----------------------------------
-
-# libraries
-library(synapser)
-synLogin()
-library(glue)
-library(data.table)
-library(openxlsx)
-
 # reading functions ------------------------------------
 
 #' Determine if Synapse ID refers to a table
@@ -524,6 +515,20 @@ is_date_format_correct <- function(dates, formats = c("%Y-%m-%d")) {
 }
 
 # synapse -----------------------------
+
+#' Extract personal access token from .synapseConfig
+#' located at a custom path. 
+#' 
+#' @param path Path to .synapseConfig
+#' @return personal acccess token
+get_auth_token <- function(path) {
+  
+  lines <- scan(path, what = "character", sep = "\t", quiet = T)
+  line <- grep(pattern = "^authtoken = ", x = lines, value = T)
+  
+  token <- strsplit(line, split = ' ')[[1]][3]
+  return(token)
+}
 
 #' Store a file on Synapse with options to define provenance.
 #' 
