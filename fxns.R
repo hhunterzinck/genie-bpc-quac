@@ -530,6 +530,52 @@ get_auth_token <- function(path) {
   return(token)
 }
 
+#' Override of synapser::synLogin() function to accept 
+#' custom path to .synapseConfig file or personal authentication
+#' token.  If no arguments are supplied, performs standard synLogin().
+#' 
+#' @param auth full path to .synapseConfig file or authentication token
+#' @param silent verbosity control on login
+#' @return TRUE for successful login; F otherwise
+#' Override of synapser::synLogin() function to accept 
+#' custom path to .synapseConfig file or personal authentication
+#' token.  If no arguments are supplied, performs standard synLogin().
+#' 
+#' @param auth full path to .synapseConfig file or authentication token
+#' @param silent verbosity control on login
+#' @return TRUE for successful login; F otherwise
+synLogin <- function(auth = NA, silent = T) {
+  
+  # default synLogin behavior
+  if (is.na(auth)) {
+    syn <- synapser::synLogin(silent = silent)
+    return(T)
+  }
+  
+  token = auth
+  
+  # extract token from .synapseConfig
+  if (grepl(x = auth, pattern = "\\.synapseConfig$")) {
+    token = get_auth_token(auth)
+    
+    if (is.na(token)) {
+      return(F)
+    }
+  }
+  
+  # login
+  syn <- tryCatch({
+    synapser::synLogin(authToken = token, silent = silent)
+  }, error = function(cond) {
+    return(F)
+  })
+  
+  if (is.null(syn)) {
+    return(T)
+  }
+  return(syn)
+}
+
 #' Store a file on Synapse with options to define provenance.
 #' 
 #' @param path Path to the file on the local machine.

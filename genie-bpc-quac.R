@@ -39,8 +39,8 @@ parser$add_argument("-u", dest = "save_to_synapse", action = "store_true", defau
                     help = "Save report log file to pre-specified Synapse folder")
 parser$add_argument("-v", dest = "verbose", action = "store_true", default = F,
                     help = "Display messages on script progress to the user")
-parser$add_argument("-a", dest = "path_config", type = "character", default = "~/.synapseConfig",
-                    help = "Path to .synapseConfig file (default: '~/.synapseConfig')")
+parser$add_argument("-a", dest = "synapse_auth", type = "character", default = "~/.synapseConfig",
+                    help = "Path to .synapseConfig file or Synapse PAT (default: '~/.synapseConfig')")
 
 # extract command line arguments
 args <- parser$parse_args()
@@ -52,7 +52,7 @@ sites <- args$site
 verbose <- args$verbose
 save_synapse <- args$save_to_synapse
 overview <- args$overview
-path_config <- args$path_config
+synapse_auth <- args$synapse_auth
 
 # check user input -------------------------------------------------------------
 
@@ -93,13 +93,6 @@ if (report == "comparison" && is.null(config$comparison[[cohort]]$previous)) {
   stop(paste0(msg1, msg2, msg3))
 }
 
-# check that .synapseConfig file exists
-if (!file.exists(path_config)) {
-  msg1 <- glue("Supplied synapse credential file '{path_config}' does not exist.  ")
-  msg2 <- glue("Please confirm the path and try again.")
-  stop(paste0(msg1, msg2))
-}
-
 # setup ------------------------------------------------------------------------
 
 # start timer
@@ -107,7 +100,6 @@ tic <- as.double(Sys.time())
 
 # libraries
 library(dplyr)
-#library(data.table)
 library(openxlsx)
 library(synapser)
 
@@ -116,8 +108,7 @@ source("fxns.R")
 source("checklist.R")
 
 # synapse login
-token <- get_auth_token(path_config)
-syn <- synLogin(silent = T, authToken = token)
+syn <- synLogin(auth = synapse_auth)
 
 # conduct checks ----------------------------------------
 
