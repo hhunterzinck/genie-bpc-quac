@@ -9,7 +9,7 @@ This repository provides a command line tool for checking raw data, intermediate
 For installation via Docker, type
 
 ```
-docker build -t genie-bpc-quac
+docker build -t genie-bpc-quac .
 ```
 
 ## Usage
