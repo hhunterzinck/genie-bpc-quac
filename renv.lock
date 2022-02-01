@@ -1,30 +1,14 @@
 {
   "R": {
-    "Version": "3.6.3",
+    "Version": "4.0.0",
     "Repositories": [
       {
         "Name": "CRAN",
         "URL": "https://cloud.r-project.org"
-      },
-      {
-        "Name": "SAGE",
-        "URL": "http://ran.synapse.org"
       }
     ]
   },
   "Packages": {
-    "PythonEmbedInR": {
-      "Package": "PythonEmbedInR",
-      "Version": "0.8.4",
-      "Source": "Repository",
-      "Repository": "SAGE",
-      "Hash": "9a489905fb7363c0c2980453131586c6",
-      "Requirements": [
-        "R6",
-        "pack",
-        "rjson"
-      ]
-    },
     "R6": {
       "Package": "R6",
       "Version": "2.5.0",
@@ -373,16 +357,6 @@
       "Repository": "CRAN",
       "Hash": "7943cfae120c77a255025e5f63856532",
       "Requirements": []
-    },
-    "synapser": {
-      "Package": "synapser",
-      "Version": "0.11.7",
-      "Source": "Repository",
-      "Repository": "SAGE",
-      "Hash": "799a9fb65ed0003716e629c97e9c152c",
-      "Requirements": [
-        "PythonEmbedInR"
-      ]
     },
     "testthat": {
       "Package": "testthat",
