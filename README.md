@@ -6,7 +6,7 @@ This repository provides a command line tool for checking raw data, intermediate
 
 ## Installation
 
-For installation via Docker, type
+For installation via Docker: 
 
 ```
 docker build -t genie-bpc-quac .
@@ -20,7 +20,7 @@ Make sure to cache your Synapse personal access token (PAT) as an environmental 
 export SYNAPSE_ACCESS_TOKEN={your_personal_access_token_here}
 ```
 
-To run via docker, type
+To run via Docker
 
 ```
 docker run -e SYNAPSE_ACCESS_TOKEN=$SYNAPSE_ACCESS_TOKEN --rm genie-bpc-quac -h
