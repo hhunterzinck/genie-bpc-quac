@@ -8,7 +8,12 @@ See [issues](https://github.com/hhunterzinck/genie-bpc-quac/issues) to create a 
 
 [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) and [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) the repository to your local machine.
 
-Add this repository as an [upstream remote](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/configuring-a-remote-for-a-fork) on your local git repository so that you are able to fetch the latest commits.
+Add this repository as an [upstream remote](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/configuring-a-remote-for-a-fork) on your local git repository and verify addition.
+
+```
+git remote add upstream git@github.com:hhunterzinck/genie-bpc-quac.git
+git remote -v
+```
 
 On your local machine make sure you have the latest version of the `develop` branch:
 
@@ -17,7 +22,7 @@ git checkout develop
 git pull upstream develop
 ```
 
-### The development life cycle
+### Development cycle
 
 `genie-bpc-quac` follows the standard [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow) development strategy.
 
