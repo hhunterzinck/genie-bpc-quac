@@ -23,7 +23,7 @@ export SYNAPSE_ACCESS_TOKEN={your_personal_access_token_here}
 To run via Docker
 
 ```
-docker run -e SYNAPSE_ACCESS_TOKEN=$SYNAPSE_ACCESS_TOKEN --rm genie-bpc-quac -h
+docker run --rm genie-bpc-quac -h
 ```
 
 The command line interface will display as follows: 
@@ -53,4 +53,10 @@ optional arguments:
   -v                    Display messages on script progress to the user
   -a SYNAPSE_AUTH       Path to .synapseConfig file or Synapse PAT (default:
                         '~/.synapseConfig')
+```
+
+Example command line with Docker:
+
+```
+docker run --rm genie-bpc-quac -c PANC -s VICC -r upload -l error -v -a $SYNAPSE_ACCESS_TOKEN
 ```
