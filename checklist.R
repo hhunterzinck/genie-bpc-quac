@@ -968,6 +968,11 @@ col_data_type_sor_mismatch <- function(cohort, site, report, output_format = "lo
     data <- get_bpc_data(cohort = cohort, site = site, 
                          report = report, obj = obj)
     
+    # remove allowed non-integer values
+    for (var in names(config$noninteger_values)) {
+      data[[var]][which(is.element(data[[var]], unlist(config$noninteger_values[var])))] = NA
+    }
+    
     # variable data types
     type_inf <- unlist(config$maps$data_type[unlist(lapply(data, infer_data_type))])
     type_sor <- get_bpc_sor_data_type(var_name = colnames(data), sor = sor)
@@ -1020,6 +1025,11 @@ col_entry_data_type_sor_mismatch <- function(cohort, site, report, output_format
   for (obj in objs) {
     data <- get_bpc_data(cohort = cohort, site = site, 
                          report = report, obj = obj)
+    
+    # remove allowed non-integer values
+    for (var in names(config$noninteger_values)) {
+      data[[var]][which(is.element(data[[var]], unlist(config$noninteger_values[var])))] = NA
+    }
     
     # variable data types from scope of release
     type_sor <- get_bpc_sor_data_type(var_name = colnames(data), sor = sor)
