@@ -110,6 +110,11 @@ maps:
   drug:
     investigational_drug: 49135
     ct_yes: 1
+noninteger_values:
+  age_at_seq_report:
+  - '>32485'
+  - 'Unknown'
+  - '>89'
 thresholds:
   fraction_missing: 0.05
 uploads:
