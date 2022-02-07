@@ -63,7 +63,7 @@ if (!is.null(number)) {
   if (!is.element(number, check_nos)) {
     msg1 <- glue("check number '{number}' is not applicable for report type '{report}'. ")
     msg2 <- glue("To view applicable check numbers, run the following: ")
-    msg3 <- glue("'Rscript main.R -c {cohort} -r upload -o'")
+    msg3 <- glue("'Rscript genie-bpc-quac.R -c {cohort} -r upload -o'")
     stop(paste0(msg1, msg2, msg3))
   }
   
@@ -72,7 +72,7 @@ if (!is.null(number)) {
   if (!is.element(level, c(choice_all, check_no_level))) {
     msg1 <- glue("check number '{number}' is not applicable for report type '{report}' and level '{level}'. ")
     msg2 <- glue("To view applicable check numbers, run the following: ")
-    msg3 <- glue("'Rscript main.R -c {cohort} -r upload -l {level} -o'")
+    msg3 <- glue("'Rscript genie-bpc-quac.R -c {cohort} -r upload -l {level} -o'")
     stop(paste0(msg1, msg2, msg3))
   }
 }
@@ -81,7 +81,7 @@ if (!is.null(number)) {
 if (report == "release" && is.null(config$release[[cohort]]$previous)) {
   msg1 <- glue("cohort {cohort} does not have a previous release. ")
   msg2 <- glue("To view other available cohorts, run the following: ")
-  msg3 <- glue("'Rscript main.R -h'")
+  msg3 <- glue("'Rscript genie-bpc-quac.R -h'")
   stop(paste0(msg1, msg2, msg3))
 }
 
@@ -89,7 +89,15 @@ if (report == "release" && is.null(config$release[[cohort]]$previous)) {
 if (report == "comparison" && is.null(config$comparison[[cohort]]$previous)) {
   msg1 <- glue("cohort {cohort} does not have a previous table version for comparison. ")
   msg2 <- glue("To view other available cohorts, run the following: ")
-  msg3 <- glue("'Rscript main.R -h'")
+  msg3 <- glue("'Rscript genie-bpc-quac.R -h'")
+  stop(paste0(msg1, msg2, msg3))
+}
+
+# for upload report, site cannot be 'all'
+if (report == "upload" && sites == choice_all) {
+  msg1 <- glue("'{report}' report must be run on an individual site. ")
+  msg2 <- glue("To view available sites, run the following: ")
+  msg3 <- glue("'Rscript genie-bpc-quac.R -h'")
   stop(paste0(msg1, msg2, msg3))
 }
 
@@ -163,44 +171,43 @@ if (overview) {
   }
 } else {
   if (length(check_fxns)) {
+    
     if (report == "upload" && sites == choice_all) {
-      sites = names(config$uploads[[cohort]])
+      sites <- names(config$uploads[[cohort]])
+    } else {
+      site <- sites
     }
     
     # run each applicable QA check
-    for (site in sites) {
+    res <- c()
+    for (i in 1:length(check_fxns)) {
       
-      res <- c()
-      
-      for (i in 1:length(check_fxns)) {
-        
-        fxn <- check_fxns[[i]]
-        if (verbose) {
-          cat(glue("{now()}: Checking '{names(check_fxns)[i]}' for cohort '{cohort}' and site '{site}'..."))
-        }
-        
-        invisible(capture.output(res_check <- check_fxns[[i]](cohort = cohort, site = if (site == choice_all) NA else site, report = report)))
-        if (verbose) {
-          cat(glue(" --> {if(is.null(res_check) || is.na(res_check)) 0 else nrow(res_check)} {check_level[i]}(s) identified"), "\n")
-        }
-        
-        res <- rbind(res, res_check)
-        
-        # check for flagged fail check
-        if (check_level[i] == "fail" && !is.null(res_check) && nrow(res_check) > 0) {
-          stop()
-        }
+      fxn <- check_fxns[[i]]
+      if (verbose) {
+        cat(glue("{now()}: Checking '{names(check_fxns)[i]}' for cohort '{cohort}' and site '{site}'..."))
       }
       
-      # write all issues to file
-      outfile <- tolower(glue("{cohort}_{site}_{report}_{level}.csv"))
-      if (length(res)) {
-        issue_no <- seq_len(nrow(res))
-        write.csv(cbind(issue_no, res), file = outfile, row.names = F)
-      } else {
-        to_write = glue("No {level}s triggered.  Congrats! All done!")
-        write(to_write, ncolumns = 1, file = outfile)
+      invisible(capture.output(res_check <- check_fxns[[i]](cohort = cohort, site = if (site == choice_all) NA else site, report = report)))
+      if (verbose) {
+        cat(glue(" --> {if(is.null(res_check) || is.na(res_check)) 0 else nrow(res_check)} {check_level[i]}(s) identified"), "\n")
       }
+      
+      res <- rbind(res, res_check)
+      
+      # check for flagged fail check
+      if (check_level[i] == "fail" && !is.null(res_check) && nrow(res_check) > 0) {
+        stop()
+      }
+    }
+    
+    # write all issues to file
+    outfile <- tolower(glue("{cohort}_{site}_{report}_{level}.csv"))
+    if (length(res)) {
+      issue_no <- seq_len(nrow(res))
+      write.csv(cbind(issue_no, res), file = outfile, row.names = F)
+    } else {
+      to_write = glue("No {level}s triggered.  Congrats! All done!")
+      write(to_write, ncolumns = 1, file = outfile)
     }
   } else {
     if (verbose) {
