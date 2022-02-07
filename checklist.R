@@ -2391,12 +2391,12 @@ file_not_csv <- function(cohort, site, report, output_format = "log") {
   if (!is.null(obj_upload$data2)) {
     res[obj_upload$data2] = is_synapse_entity_csv(obj_upload$data2)
   }
-  
+
   if (!is.null(res) && length(which(!res))) {
     output <- format_output(value = NA,
                             cohort = cohort, 
                             site = site,  
-                            synid = names(res)[idx],
+                            synid = names(res)[which(!res)],
                             patient_id = NA, 
                             instrument = NA, 
                             instance = NA, 
