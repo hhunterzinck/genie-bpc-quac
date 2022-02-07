@@ -222,7 +222,9 @@ release:
     previous: 
     current: 1.1-consortium
 report:
-  upload: 
+  upload:
+  - 44
+  - 45
   - 1
   - 2
   - 7
@@ -283,6 +285,8 @@ report:
   - 40
   - 41
   masking:
+  - 44
+  - 45
   - 29
   - 30
   - 31
@@ -592,3 +596,17 @@ checks:
     label: ct_drug_not_investigational
     description: Drug on a clinical trial regimen is not masked as an Investigational Drug. 
     action: Please mask the drug name with the Investigational Drug label.
+  44:
+    implemented: 1
+    deprecated: 0
+    level: fail
+    label: file_not_csv
+    description: The file does not appear to be a CSV file.
+    action: Please check the file format and ensure the correct data was uploaded.
+  45:
+    implemented: 1
+    deprecated: 0
+    level: fail
+    label: data_header_col_mismatch
+    description: The number of columns in the data and header files do not match.
+    action: Please check the data and header files have the same corresponding columns.  

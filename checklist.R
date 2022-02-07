@@ -2368,3 +2368,75 @@ ct_drug_not_investigational <- function(cohort, site, report, output_format = "l
   
   return(output)
 }
+
+#' Check that a file loaded on Synapse is in CSV format.    
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center (not required, included for consistency)
+#' @param output_format (optional) output format for the check
+#' @return number of current patients 
+#' @example
+#' file_not_csv(cohort = "Prostate", site = "VICC", report = "masking", output_format = "log")
+
+file_not_csv <- function(cohort, site, report, output_format = "log") {
+  
+  output <- c()
+  res <- c()
+  obj_upload <- config$uploads[[cohort]][[site]]
+  
+  if (!is.null(obj_upload$data1)) {
+    res[obj_upload$data1] = is_synapse_entity_csv(obj_upload$data1)
+  }
+  
+  if (!is.null(obj_upload$data2)) {
+    res[obj_upload$data2] = is_synapse_entity_csv(obj_upload$data2)
+  }
+  
+  if (!is.null(res) && length(which(!res))) {
+    output <- format_output(value = NA,
+                            cohort = cohort, 
+                            site = site,  
+                            synid = names(res)[idx],
+                            patient_id = NA, 
+                            instrument = NA, 
+                            instance = NA, 
+                            column_name = NA, 
+                            check_no = 44, 
+                            infer_site = F)
+  }
+  
+  return(output)
+}
+
+data_header_col_mismatch <- function(cohort, site, report, output_format = "log") {
+  output <- c()
+  res <- c()
+  obj_upload <- config$uploads[[cohort]][[site]]
+  
+  if (!is.null(obj_upload$data1) && !is.null(obj_upload$header1)) {
+    data1 = get_data(obj_upload$data1)
+    header1 = get_data(obj_upload$header1)
+    res[obj_upload$data1] = ncol(data1) == ncol(header1)
+  }
+  
+  if (!is.null(obj_upload$data2) && !is.null(obj_upload$header2)) {
+    data2 = get_data(obj_upload$data2)
+    header2 = get_data(obj_upload$header2)
+    res[obj_upload$data2] = ncol(data2) == ncol(header2)
+  }
+  
+  if (!is.null(res) && length(which(!res))) {
+    output <- format_output(value = NA,
+                            cohort = cohort, 
+                            site = site,  
+                            synid = names(res)[idx],
+                            patient_id = NA, 
+                            instrument = NA, 
+                            instance = NA, 
+                            column_name = NA, 
+                            check_no = 45, 
+                            infer_site = F)
+  }
+  
+  return(output)
+}

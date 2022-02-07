@@ -14,7 +14,7 @@ config <- read_yaml("config.yaml")
 
 choices_report <- sort(names(config$report))
 choices_number <- as.integer(names(config$checks)[which(unlist(lapply(config$checks, function(x) {if (x$implemented && !x$deprecated) T else F})))])
-choices_level <- sort(unique(unlist(lapply(config$checks, function(x) {return(x$level)}))))
+choices_level <- setdiff(sort(unique(unlist(lapply(config$checks, function(x) {return(x$level)})))), "fail")
 choices_cohort <- sort(names(config$uploads))
 choices_site <- sort(unique(unlist(lapply(config$uploads, names))))
 choice_all = "all"
@@ -110,7 +110,7 @@ source("checklist.R")
 # synapse login
 syn <- synLogin(auth = synapse_auth)
 
-# conduct checks ----------------------------------------
+# parameter messaging ----------------------------------------
 
 if (verbose) {
   
@@ -131,6 +131,8 @@ if (verbose) {
   print(glue("- save on synapse:\t{save_synapse}"))
 }
 
+# level checks ----------------------------------------
+
 # storage
 valid_levels <- level
 check_nos <- c()
@@ -141,6 +143,7 @@ outfile <- ""
 if (level == choice_all) {
   valid_levels <- choices_level
 } 
+valid_levels <- c("fail", valid_levels)
 if (is.null(number)) {
   check_nos <- config$report[[report]]
 } else {
@@ -150,6 +153,7 @@ if (is.null(number)) {
 # collect relevant check functions
 check_nos_valid <- check_nos[unlist(lapply(config$checks[check_nos], function(x) {return(if (x$deprecated == 0 && x$implemented == 1 && is.element(x$level, valid_levels)) T else F)}))]
 check_labels <- unlist(lapply(config$checks[check_nos_valid], function(x) {return(x$label)}))
+check_level <- unlist(lapply(config$checks[check_nos_valid], function(x) {return(x$level)}))
 check_fxns <- get_check_functions(check_labels)
 
 if (overview) {
@@ -177,10 +181,15 @@ if (overview) {
         
         invisible(capture.output(res_check <- check_fxns[[i]](cohort = cohort, site = if (site == choice_all) NA else site, report = report)))
         if (verbose) {
-          cat(glue(" --> {if(is.null(res_check) || is.na(res_check)) 0 else nrow(res_check)} {level}(s) identified"), "\n")
+          cat(glue(" --> {if(is.null(res_check) || is.na(res_check)) 0 else nrow(res_check)} {check_level[i]}(s) identified"), "\n")
         }
         
         res <- rbind(res, res_check)
+        
+        # check for flagged fail check
+        if (check_level[i] == "fail" && !is.null(res_check) && nrow(res_check) > 0) {
+          stop()
+        }
       }
       
       # write all issues to file
