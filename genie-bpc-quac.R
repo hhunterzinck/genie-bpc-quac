@@ -118,6 +118,10 @@ if (verbose) {
   print(glue("- cohort:\t\t{cohort}"))
   print(glue("- site(s):\t\t{sites}"))
   print(glue("- report:\t\t{report}"))
+  if (report == "comparison") {
+    print(glue("  - previous: {config$comparison[[cohort]]$previous}"))
+    print(glue("  - current: {config$comparison[[cohort]]$current}"))
+  }
   print(glue("- level:\t\t{level}"))
   if (!is.null(number)) {
     print(glue("- number:\t\t{number}"))

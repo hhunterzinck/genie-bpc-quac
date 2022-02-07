@@ -970,7 +970,9 @@ col_data_type_sor_mismatch <- function(cohort, site, report, output_format = "lo
     
     # remove allowed non-integer values
     for (var in names(config$noninteger_values)) {
-      data[[var]][which(is.element(data[[var]], unlist(config$noninteger_values[var])))] = NA
+      if (is.element(var, colnames(data))) {
+        data[[var]][which(is.element(data[[var]], unlist(config$noninteger_values[var])))] = NA
+      }
     }
     
     # variable data types
@@ -1028,7 +1030,9 @@ col_entry_data_type_sor_mismatch <- function(cohort, site, report, output_format
     
     # remove allowed non-integer values
     for (var in names(config$noninteger_values)) {
-      data[[var]][which(is.element(data[[var]], unlist(config$noninteger_values[var])))] = NA
+      if (is.element(var, colnames(data))) {
+        data[[var]][which(is.element(data[[var]], unlist(config$noninteger_values[var])))] = NA
+      }
     }
     
     # variable data types from scope of release
