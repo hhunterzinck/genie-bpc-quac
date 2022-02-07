@@ -257,3 +257,5 @@ toc <- as.double(Sys.time())
 if (verbose) {
   print(glue("{now()}: Runtime: {round(toc - tic)} s"))
 }
+
+quit(status = n_issue)
