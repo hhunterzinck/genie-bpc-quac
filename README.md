@@ -1,29 +1,48 @@
-# GENIE Biopharma Collaborative Quality Assurance Checklist tool
+# GENIE BPC Quality Assurance Checklist
 
 ## Overview
 
-This repository provides a command line tool for checking raw data, intermediate files, and final data releases for the GENIE Biopharma Collaborative project.  
+This repository provides a command line tool for checking raw data, intermediate files, and final data releases for the GENIE Biopharma Collaborative (BPC) project.  
 
 ## Installation
 
-For installation via Docker: 
+Clone this repository and navigate to the directory:
+
+```
+git clone git@github.com:hhunterzinck/genie-bpc-quac.git
+cd genie-bpc-quac/
+```
+
+For installation with Docker: 
 
 ```
 docker build -t genie-bpc-quac .
 ```
 
-## Usage
+For install without Docker, install Synapser and other required packages:
+```
+R -e 'install.packages("synapser", repos = c("http://ran.synapse.org", "http://cran.fhcrc.org"))'
+R -e 'renv::restore()'
+```
+
+## Usage 
 
 Make sure to cache your Synapse personal access token (PAT) as an environmental variable:
 
 ```
-export SYNAPSE_ACCESS_TOKEN={your_personal_access_token_here}
+export SYNAPSE_AUTH_TOKEN={your_personal_access_token_here}
 ```
 
-To run via Docker
+To run with Docker:
 
 ```
 docker run --rm genie-bpc-quac -h
+```
+
+To run without Docker:
+
+```
+Rscript genie-bpc-quac.R -h
 ```
 
 The command line interface will display as follows: 
@@ -58,5 +77,11 @@ optional arguments:
 Example command line with Docker:
 
 ```
-docker run --rm genie-bpc-quac -c PANC -s VICC -r upload -l error -v -a $SYNAPSE_ACCESS_TOKEN
+docker run --rm genie-bpc-quac -c BLADDER -s VICC -r upload -l error -v -a $SYNAPSE_AUTH_TOKEN
+```
+
+Example command line without Docker:
+
+```
+Rscript genie-bpc-quac -c BLADDER -s VICC -r upload -l error -v -a $SYNAPSE_AUTH_TOKEN
 ```
