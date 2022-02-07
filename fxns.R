@@ -619,13 +619,17 @@ save_to_synapse <- function(path,
 #' @return TRUE is text/csv file type; FALSE otherwise
 #' @example is_synapse_entity_csv("syn12345")
 is_synapse_entity_csv <- function(synapse_id) {
-  entity <- synGet(synapse_id, downloadFile = T)
   
-  if (grepl(pattern = "File", x = entity$properties$concreteType) && 
-        is.element(entity$get("contentType"), c("application/vnd.ms-excel", "text/csv"))) {
-    return(T)
+  data <- tryCatch({
+    get_data(synapse_id)
+  }, error = function(cond) {
+    return(NULL)
+  })
+  
+  if (is.null(data)) {
+    return(F)
   }
-  return(F)
+  return(T)
 }
 
 # misc -------------------------------
