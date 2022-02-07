@@ -223,7 +223,7 @@ if (save_synapse && file.exists(outfile)) {
                   prov_name = "GENIE BPC QA log", 
                   prov_desc = glue("GENIE BPC QA {report} {level} log for cohort '{cohort}' and site(s) '{sites}'"), 
                   prov_used = NA, 
-                  prov_exec = "https://github.com/Sage-Bionetworks/Genie_processing/blob/quac/bpc/quac/main.R")
+                  prov_exec = "https://github.com/hhunterzinck/genie-bpc-quac/blob/develop/genie-bpc-quac.R")
   synSetAnnotations(synid_file_output, annotations=list(cohort = cohort, 
                                                         site = sites, 
                                                         level = level, 
