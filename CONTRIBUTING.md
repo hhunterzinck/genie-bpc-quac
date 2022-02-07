@@ -45,14 +45,7 @@ git pull upstream develop
 1. Push branch to your fork on GitHub.
 
     ```
-
     git push --set-upstream origin gh-123-add-some-new-feature
-    ```
-
-1. Make changes and run auto python code formatter, black.
-
-    ```
-    black ./
     ```
 
 1. Commit and push changes.
