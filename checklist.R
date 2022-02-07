@@ -243,7 +243,7 @@ get_bpc_data_upload <- function(cohort, site, report,
 #' get_version_at_date("syn12345", date_version = "2100-01-01")
 get_bpc_version_at_date <- function(synid_table, date_version,
                                 ts_format = "%Y-%m-%dT%H:%M:%OS", 
-                                tz_current = Sys.timezone(),
+                                tz_current = "UTC",
                                 tz_target = "US/Pacific") {
   
   rest_cmd <- glue("/entity/{synid_table}/version?limit=50")
