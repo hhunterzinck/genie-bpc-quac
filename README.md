@@ -77,11 +77,58 @@ optional arguments:
 Example command line with Docker:
 
 ```
-docker run --rm genie-bpc-quac -c BLADDER -s VICC -r upload -l error -v -a $SYNAPSE_AUTH_TOKEN
+docker run --rm genie-bpc-quac -c {cohort} -s {site} -r upload -l error -v -a $SYNAPSE_AUTH_TOKEN
 ```
 
 Example command line without Docker:
 
 ```
-Rscript genie-bpc-quac -c BLADDER -s VICC -r upload -l error -v -a $SYNAPSE_AUTH_TOKEN
+Rscript genie-bpc-quac.R -c {cohort} -s {site} -r upload -l error -v -a $SYNAPSE_AUTH_TOKEN
+```
+
+## Reports
+
+### upload
+
+Upload reports run quality checks on the data uploaded by individual sites.  
+
+To see an overview of all checks implemented in the upload report:
+```
+Rscript genie-bpc-quac.R -r upload -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+### masking
+
+Masking reports run drug masking quality checks on the data uploaded by individual sites.  
+
+To see an overview of all checks implemented in the masking report:
+```
+Rscript genie-bpc-quac.R -r masking -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+### table
+
+Table reports run checks on the data once it has been merged and uploaded from individual data files into Synapse tables.  
+
+To see an overview of all checks implemented in the table report:
+```
+Rscript genie-bpc-quac.R -r table -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+### comparison
+
+Comparison reports compare the current version of the data in the Synapse tables to the version of the same tables representing the previous data upload for the cohort, if applicable.   
+
+To see an overview of all checks implemented in the comparison report:
+```
+Rscript genie-bpc-quac.R -r comparison -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+### release
+
+Release reports compare the current and previous final data release files, if applicable.  
+
+To see an overview of all checks implemented in the release report:
+```
+Rscript genie-bpc-quac.R -r release -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
 ```
