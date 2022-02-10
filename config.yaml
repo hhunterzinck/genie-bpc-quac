@@ -248,6 +248,7 @@ report:
   - 33
   - 34
   - 42
+  - 46
   table:
   - 7
   - 9
@@ -487,7 +488,7 @@ checks:
   28:
     implemented: 1
     deprecated: 0
-    level: warning
+    level: error
     label: patient_count_too_small
     description: Current case count is less than target count.
     action: Please add cases to meet target.
@@ -610,3 +611,10 @@ checks:
     label: data_header_col_mismatch
     description: The number of columns in the data and header files do not match.
     action: Please check the data and header files have the same corresponding columns.  
+  46:
+    implemented: 1
+    deprecated: 0
+    level: warning
+    label: current_count_not_target
+    description: Current case count does not match target count.
+    action: Please add or remove cases to match target.
