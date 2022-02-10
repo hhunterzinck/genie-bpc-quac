@@ -1689,8 +1689,11 @@ patient_count_too_small <- function(cohort, site, report, output_format = "log",
   
   # read upload
   obj_upload <- config$uploads[[cohort]][[site]]
-  data <- get_bpc_data(cohort = cohort, site = site,                                report = report, obj = obj_upload)
-  n_current <- length(unique(data[[config$column_name$patient_id]]))
+  data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
+  patient_id <- data[[config$column_name$patient_id]]
+  n_total <- length(unique(patient_id))
+  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
+  n_current = n_total - n_irr
   
   # read samples for cohort from patient table
   query <- glue("SELECT target_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
@@ -2435,6 +2438,86 @@ data_header_col_mismatch <- function(cohort, site, report, output_format = "log"
                             instance = NA, 
                             column_name = NA, 
                             check_no = 45, 
+                            infer_site = F)
+  }
+  
+  return(output)
+}
+
+#' Check if patient count does not equal target count.   
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center (not required, included for consistency)
+#' @param output_format (optional) output format for the check
+#' @return current and target count message
+#' @example
+#' current_count_not_target(cohort = "Prostate", site = "VICC", output_format = "log")
+current_count_not_target <- function(cohort, site, report, output_format = "log", phase = 1) {
+  # read upload
+  obj_upload <- config$uploads[[cohort]][[site]]
+  data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
+  patient_id <- data[[config$column_name$patient_id]]
+  n_total <- length(unique(patient_id))
+  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
+  n_current = n_total - n_irr
+  
+  # read samples for cohort from patient table
+  query <- glue("SELECT target_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
+  n_target <- as.integer(unlist(as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))))
+  
+  output <- NULL
+  if (n_current != n_target) {
+    output <- format_output(value = glue("current count {n_current} not equal to target {n_target}"), 
+                            cohort = cohort, 
+                            site = site,
+                            output_format = output_format,
+                            column_name = config$column_name$patient_id, 
+                            synid = obj_upload$data1,
+                            patient_id = NA, 
+                            instrument = NA, 
+                            instance = NA,
+                            check_no = 46,
+                            infer_site = F)
+  }
+  
+  return(output)
+  
+}
+
+#' Check if patient count less than target count.   
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center (not required, included for consistency)
+#' @param output_format (optional) output format for the check
+#' @return number of current patients 
+#' @example
+#' patient_count_too_large(cohort = "Prostate", site = "VICC", output_format = "log")
+patient_count_too_large <- function(cohort, site, report, output_format = "log", phase = 1) {
+  
+  # read upload
+  obj_upload <- config$uploads[[cohort]][[site]]
+  data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
+  patient_id <- data[[config$column_name$patient_id]]
+  n_total <- length(unique(patient_id))
+  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
+  n_current = n_total - n_irr
+  
+  # read samples for cohort from patient table
+  query <- glue("SELECT target_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
+  n_target <- as.integer(unlist(as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))))
+  
+  output <- NULL
+  if (n_current > n_target) {
+    output <- format_output(value = glue("{n_current}-->{n_target} (remove {n_current - n_target})"), 
+                            cohort = cohort, 
+                            site = site,
+                            output_format = output_format,
+                            column_name = config$column_name$patient_id, 
+                            synid = obj_upload$data1,
+                            patient_id = NA, 
+                            instrument = NA, 
+                            instance = NA,
+                            check_no = 47,
                             infer_site = F)
   }
   
