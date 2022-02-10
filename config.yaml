@@ -249,6 +249,7 @@ report:
   - 34
   - 42
   - 46
+  - 47
   table:
   - 7
   - 9
@@ -618,3 +619,10 @@ checks:
     label: current_count_not_target
     description: Current case count does not match target count.
     action: Please add or remove cases to match target.
+  47:
+    implemented: 1
+    deprecated: 0
+    level: error
+    label: patient_count_too_large
+    description: Current case count is greater than target count.
+    action: Please remove cases to meet target.
