@@ -346,7 +346,7 @@ get_bpc_data <- function(cohort, site, report, obj = NULL) {
   return(NULL)
 }
 
-#' Get patients or sample IDs added or removed based on BPC tables between uploads.
+#' Get patients or sample IDs added or removed between different stages or versions.
 #' 
 #' @param cohort Name of the cohort
 #' @param site Name of the site
@@ -372,7 +372,20 @@ get_bpc_patient_sample_added_removed <- function(cohort, site, report,
     file_name <- config$file_name$sample_file
   }
   
-  if (report == "table" || report == "comparison") {
+  if (report == "upload") {
+    synid_tables <- get_synid_from_table(config$synapse$tables_view$id,
+                                         condition = "double_curated = false",
+                                         with_names = T)
+    synid_table <- as.character(synid_tables[table_name])
+    data_previous <- get_bpc_data(cohort = cohort, site = site, report = "table", 
+                                  obj = list(synid_table = synid_table, previous = F, select = NA))
+    
+    # get upload data excluding IRR cases
+    data_current_irr <- get_bpc_data(cohort = cohort, site = site, report = report, 
+                                obj = config$uploads[[cohort]][[site]])
+    data_current <- data_current_irr %>%
+      filter(grepl(pattern = "[_-]2$", x = !!config$column_name$patient_id))
+  } else if (report == "table" || report == "comparison") {
     synid_tables <- get_synid_from_table(config$synapse$tables_view$id,
                                          condition = "double_curated = false",
                                          with_names = T)
