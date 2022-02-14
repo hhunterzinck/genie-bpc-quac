@@ -384,7 +384,7 @@ get_bpc_patient_sample_added_removed <- function(cohort, site, report,
     data_current_irr <- get_bpc_data(cohort = cohort, site = site, report = report, 
                                 obj = config$uploads[[cohort]][[site]])
     data_current <- data_current_irr %>%
-      filter(grepl(pattern = "[_-]2$", x = !!config$column_name$patient_id))
+      filter(!grepl(pattern = "[_-]2$", x = !!config$column_name$patient_id))
   } else if (report == "table" || report == "comparison") {
     synid_tables <- get_synid_from_table(config$synapse$tables_view$id,
                                          condition = "double_curated = false",
