@@ -497,7 +497,7 @@ get_date_as_string <- function(ts, ts_format = "%Y-%m-%dT%H:%M:%OS",
 #' Check that timestamps 
 is_timestamp_format_correct <- function(timestamps, 
                                        formats = c("%Y-%m-%d %H:%M:%S")) {
-  res <- as.POSIXct(x = timestamps, tryFormats = formats, optional = T)
+  res <- as.POSIXct(x = as.character(timestamps), tryFormats = formats, optional = T)
   
   idx_na <- which(is.na(timestamps))
   if (length(idx_na)) {
@@ -509,7 +509,7 @@ is_timestamp_format_correct <- function(timestamps,
 
 is_date_format_correct <- function(dates, formats = c("%Y-%m-%d")) {
   
-  res <- is_timestamp_format_correct(timestamps = dates, 
+  res <- is_timestamp_format_correct(timestamps = as.character(dates), 
                                      formats = formats)
   return(res)
 }
