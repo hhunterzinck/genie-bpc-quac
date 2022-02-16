@@ -2557,17 +2557,17 @@ cpt_sample_type_numeric <- function(cohort, site, report, output_format = "log")
     filter(redcap_repeat_instrument == config$instrument_name$panel & is_double(cpt_sample_type)) %>%
     select(cpt_sample_type, record_id, redcap_repeat_instrument, redcap_repeat_instance)
     
-    output <- format_output(value = res$cpt_sample_type, 
-                            cohort = cohort, 
-                            site = site,
-                            output_format = output_format,
-                            column_name = "cpt_sample_type", 
-                            synid = obj_upload$data1,
-                            patient_id = res$record_id, 
-                            instrument = res$redcap_repeat_instrument, 
-                            instance = res$redcap_repeat_instance,
-                            check_no = 48,
-                            infer_site = F)
+  output <- format_output(value = res$cpt_sample_type, 
+                          cohort = cohort, 
+                          site = site,
+                          output_format = output_format,
+                          column_name = "cpt_sample_type", 
+                          synid = obj_upload$data1,
+                          patient_id = res$record_id, 
+                          instrument = res$redcap_repeat_instrument, 
+                          instance = res$redcap_repeat_instance,
+                          check_no = 48,
+                          infer_site = F)
     return(output)
 }
 
