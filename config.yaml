@@ -254,6 +254,7 @@ report:
   - 42
   - 46
   - 47
+  - 48
   table:
   - 7
   - 9
@@ -630,3 +631,10 @@ checks:
     label: patient_count_too_large
     description: Current case count is greater than target count.
     action: Please remove cases to meet target.
+  48:
+    implemented: 1
+    deprecated: 0
+    level: error
+    label: cpt_sample_type_numeric
+    description: cpt_sample_type is numeric instead of text.
+    action: Please replace numeric value with appropriate text label.
