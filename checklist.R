@@ -2557,16 +2557,49 @@ cpt_sample_type_numeric <- function(cohort, site, report, output_format = "log")
     filter(redcap_repeat_instrument == config$instrument_name$panel & is_double(cpt_sample_type)) %>%
     select(cpt_sample_type, record_id, redcap_repeat_instrument, redcap_repeat_instance)
     
-    output <- format_output(value = res$cpt_sample_type, 
-                            cohort = cohort, 
-                            site = site,
-                            output_format = output_format,
-                            column_name = "cpt_sample_type", 
-                            synid = obj_upload$data1,
-                            patient_id = res$record_id, 
-                            instrument = res$redcap_repeat_instrument, 
-                            instance = res$redcap_repeat_instance,
-                            check_no = 48,
-                            infer_site = F)
+  output <- format_output(value = res$cpt_sample_type, 
+                          cohort = cohort, 
+                          site = site,
+                          output_format = output_format,
+                          column_name = "cpt_sample_type", 
+                          synid = obj_upload$data1,
+                          patient_id = res$record_id, 
+                          instrument = res$redcap_repeat_instrument, 
+                          instance = res$redcap_repeat_instance,
+                          check_no = 48,
+                          infer_site = F)
     return(output)
+}
+
+#' Check for columns that are required for running quality assurance checklist.
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center (not required, included for consistency)
+#' @param output_format (optional) output format for the check
+#' @return quac required columns that are missing
+#' @example
+#' cpt_sample_type_numeric(cohort = "Prostate", site = "VICC", output_format = "log")
+quac_required_column_missing <- function(cohort, site, report, output_format = "log") {
+  
+  output <- NULL
+  
+  col_req <- as.character(unlist(config$column_name))
+ 
+  obj_upload <- config$uploads[[cohort]][[site]]
+  data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
+  
+  res <- setdiff(col_req, colnames(data))
+  
+  output <- format_output(value = res, 
+                          cohort = cohort, 
+                          site = site,
+                          output_format = output_format,
+                          column_name = res, 
+                          synid = obj_upload$data1,
+                          patient_id = NA, 
+                          instrument = NA, 
+                          instance = NA,
+                          check_no = 49,
+                          infer_site = F)
+  return(output)
 }

@@ -225,6 +225,7 @@ report:
   upload:
   - 44
   - 45
+  - 49
   - 3
   - 4
   - 5
@@ -638,3 +639,10 @@ checks:
     label: cpt_sample_type_numeric
     description: cpt_sample_type is numeric instead of text.
     action: Please replace numeric value with appropriate text label.
+  49:
+    implemented: 1
+    deprecated: 0
+    level: fail
+    label: quac_required_column_missing
+    description: File must contain column but column not found.
+    action: Please ensure this column is included. 
