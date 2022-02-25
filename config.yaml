@@ -256,6 +256,7 @@ report:
   - 46
   - 47
   - 48
+  - 50
   table:
   - 7
   - 9
@@ -646,3 +647,10 @@ checks:
     label: quac_required_column_missing
     description: File must contain column but column not found.
     action: Please ensure this column is included. 
+  50: 
+    implemented: 1
+    deprecated: 0
+    level: error
+    label: invalid_choice_code
+    description: The selected value does not match value choices in the data dictionary.
+    action: Please confirm selected value matches a valid choice.
