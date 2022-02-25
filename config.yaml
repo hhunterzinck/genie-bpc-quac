@@ -210,8 +210,8 @@ release:
     previous: 1.1-consortium
     current: 1.2-consortium
   NSCLC:
-    previous: 1.1-consortium
-    current: 2.1-consortium
+    previous: 2.1-consortium
+    current: 2.0-public
   PANC:
     previous: 
     current: 1.1-consortium
