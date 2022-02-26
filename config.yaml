@@ -498,7 +498,7 @@ checks:
   28:
     implemented: 1
     deprecated: 0
-    level: error
+    level: warning
     label: patient_count_too_small
     description: Current case count is less than target count.
     action: Please add cases to meet target.
@@ -623,7 +623,7 @@ checks:
     action: Please check the data and header files have the same corresponding columns.  
   46:
     implemented: 1
-    deprecated: 0
+    deprecated: 1
     level: warning
     label: current_count_not_target
     description: Current case count does not match target count.
@@ -631,7 +631,7 @@ checks:
   47:
     implemented: 1
     deprecated: 0
-    level: error
+    level: warning
     label: patient_count_too_large
     description: Current case count is greater than target count.
     action: Please remove cases to meet target.
