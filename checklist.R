@@ -2735,3 +2735,49 @@ greater_than_adjusted_target <- function(cohort, site, report, output_format = "
   
   return(output)
 }
+
+#' Check for character entries that have been converted to doubles.   
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center
+#' @param output_format (optional) output format for the check
+#' @return columns with character doubles
+#' @example
+#' character_double_value(cohort = "Prostate", site = "VICC", output_format = "log")
+character_double_value <- function(cohort, site, report, output_format = "log") {
+  
+  objs <- list()
+  output <- NULL
+  
+  synid_table_all <- get_bpc_table_synapse_ids()
+  for (i in 1:length(synid_table_all)) {
+    objs[[i]] <- list(synid_table = as.character(synid_table_all[i]), previous = F, select = NA)
+  }
+  
+  for (obj in objs) {
+    data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj)
+    
+    for (i in 1:ncol(data)) {
+      idx = which(!sapply(data[,i], is_double))
+      data_col <- data[,i]
+      data_col[idx] = NA
+      comp <- cbind(data_col, as.character(as.double(data_col)))
+                             
+       if (!identical(comp[,1], comp[,2])) {
+         output <- rbind(output, format_output(value = NA, 
+                       cohort = cohort, 
+                       site = site,
+                       output_format = output_format,
+                       column_name = colnames(data)[i], 
+                       synid = obj$synid_table,
+                       patient_id = NA, 
+                       instrument = NA, 
+                       instance = NA,
+                       check_no = 53,
+                       infer_site = F))
+       }
+    }
+  }
+
+  return(output)
+}
