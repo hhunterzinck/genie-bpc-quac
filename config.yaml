@@ -257,6 +257,8 @@ report:
   - 47
   - 48
   - 50
+  - 51
+  - 52
   table:
   - 7
   - 9
@@ -496,7 +498,7 @@ checks:
   28:
     implemented: 1
     deprecated: 0
-    level: error
+    level: warning
     label: patient_count_too_small
     description: Current case count is less than target count.
     action: Please add cases to meet target.
@@ -621,7 +623,7 @@ checks:
     action: Please check the data and header files have the same corresponding columns.  
   46:
     implemented: 1
-    deprecated: 0
+    deprecated: 1
     level: warning
     label: current_count_not_target
     description: Current case count does not match target count.
@@ -629,7 +631,7 @@ checks:
   47:
     implemented: 1
     deprecated: 0
-    level: error
+    level: warning
     label: patient_count_too_large
     description: Current case count is greater than target count.
     action: Please remove cases to meet target.
@@ -654,3 +656,17 @@ checks:
     label: invalid_choice_code
     description: The selected value does not match value choices in the data dictionary.
     action: Please confirm selected value matches a valid choice.
+  51: 
+    implemented: 1
+    deprecated: 0
+    level: error
+    label: less_than_adjusted_target
+    description: Case count is less than adjusted target count.
+    action: Please confirm case count and submit any retracted samples.  
+  52: 
+    implemented: 1
+    deprecated: 0
+    level: error
+    label: greater_than_adjusted_target
+    description: Case count is greater than adjusted target count.
+    action: Please confirm case count. 

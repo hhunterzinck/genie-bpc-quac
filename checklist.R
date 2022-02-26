@@ -556,6 +556,18 @@ get_bpc_curation_year <- function(cohort, site) {
   return(substr(dt, 1, 4))
 }
 
+#' Get current unique case count without IRR samples in a BPC file represented as a data frame.
+#' @param data data frame 
+#' @return integer
+get_bpc_case_count <- function(data) {
+  patient_id <- data[[config$column_name$patient_id]]
+  n_total <- length(unique(patient_id))
+  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
+  n_current = n_total - n_irr
+  
+  return(n_current)
+}
+
 # hemonc functions ------------------------------------
 
 #' Get HemOnc code from NCIT code from map stored on Synapse.
@@ -1525,7 +1537,7 @@ col_empty_but_required <- function(cohort, site, report, output_format = "log", 
 #' not the scope of release.
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return vector of column names
 #' @example
@@ -1568,7 +1580,7 @@ col_table_not_sor <- function(cohort, site, report, output_format = "log") {
 #' of release but not the tables.  
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return vector of column names
 #' @example
@@ -1610,7 +1622,7 @@ col_sor_not_table <- function(cohort, site, report, output_format = "log") {
 #' Check for patients marked as removed from BPC in a BPC cohort.   
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param report Type of report in which the check is being conducted (e.g. upload, table).
 #' @param output_format (optional) output format for the check
 #' @return vector of patient IDs
@@ -1651,7 +1663,7 @@ patient_marked_removed_from_bpc <- function(cohort, site, report, output_format 
 #' Check for samples marked as removed from BPC a BPC cohort.   
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return vector of sample IDs
 #' @example
@@ -1693,7 +1705,7 @@ sample_marked_removed_from_bpc <- function(cohort, site, report, output_format =
 #' Check if patient count less than target count.   
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return number of current patients 
 #' @example
@@ -1703,10 +1715,8 @@ patient_count_too_small <- function(cohort, site, report, output_format = "log",
   # read upload
   obj_upload <- config$uploads[[cohort]][[site]]
   data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
-  patient_id <- data[[config$column_name$patient_id]]
-  n_total <- length(unique(patient_id))
-  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
-  n_current = n_total - n_irr
+  
+  n_current <- get_bpc_case_count(data)
   
   # read samples for cohort from patient table
   query <- glue("SELECT target_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
@@ -1733,7 +1743,7 @@ patient_count_too_small <- function(cohort, site, report, output_format = "log",
 #' Check if investigational (masked) drug duration is greater than 1 day.    
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return number of current patients 
 #' @example
@@ -1773,7 +1783,7 @@ investigational_drug_duration <- function(cohort, site, report, output_format = 
 #' Check if investigational (masked) drug has another drug specified in the other drug column.    
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return number of current patients 
 #' @example
@@ -1813,7 +1823,7 @@ investigational_drug_other_name <- function(cohort, site, report, output_format 
 #' Check that investigational (masked) drug is indicated as part of a clinical trial.    
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return number of current patients 
 #' @example
@@ -1854,7 +1864,7 @@ investigational_drug_not_ct <- function(cohort, site, report, output_format = "l
 #' Check if non-investigational (unmasked) drugs are not FDA approved.    
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return number of current patients 
 #' @example
@@ -2347,7 +2357,7 @@ required_not_uploaded <- function(cohort, site, report, output_format = "log", e
 #' Check that all drugs on a clinical trial regimen are marked investigational (masked).    
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return number of current patients 
 #' @example
@@ -2388,7 +2398,7 @@ ct_drug_not_investigational <- function(cohort, site, report, output_format = "l
 #' Check that a file loaded on Synapse is in CSV format.    
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return number of current patients 
 #' @example
@@ -2460,7 +2470,7 @@ data_header_col_mismatch <- function(cohort, site, report, output_format = "log"
 #' Check if patient count does not equal target count.   
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return current and target count message
 #' @example
@@ -2469,10 +2479,8 @@ current_count_not_target <- function(cohort, site, report, output_format = "log"
   # read upload
   obj_upload <- config$uploads[[cohort]][[site]]
   data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
-  patient_id <- data[[config$column_name$patient_id]]
-  n_total <- length(unique(patient_id))
-  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
-  n_current = n_total - n_irr
+  
+  n_current <- get_bpc_case_count(data)
   
   # read samples for cohort from patient table
   query <- glue("SELECT target_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
@@ -2500,7 +2508,7 @@ current_count_not_target <- function(cohort, site, report, output_format = "log"
 #' Check if patient count less than target count.   
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return number of current patients 
 #' @example
@@ -2510,10 +2518,8 @@ patient_count_too_large <- function(cohort, site, report, output_format = "log",
   # read upload
   obj_upload <- config$uploads[[cohort]][[site]]
   data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
-  patient_id <- data[[config$column_name$patient_id]]
-  n_total <- length(unique(patient_id))
-  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
-  n_current = n_total - n_irr
+  
+  n_current <- get_bpc_case_count(data)
   
   # read samples for cohort from patient table
   query <- glue("SELECT target_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
@@ -2541,7 +2547,7 @@ patient_count_too_large <- function(cohort, site, report, output_format = "log",
 #' should be text. 
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return rows with numeric values for cpt_sample_type 
 #' @example
@@ -2574,7 +2580,7 @@ cpt_sample_type_numeric <- function(cohort, site, report, output_format = "log")
 #' Check for columns that are required for running quality assurance checklist.
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return quac required columns that are missing
 #' @example
@@ -2607,7 +2613,7 @@ quac_required_column_missing <- function(cohort, site, report, output_format = "
 #' Check for missing drug name when drug start and/or end date is specified.
 #'
 #' @param cohort Name of the cohort
-#' @param site Name of the site or center (not required, included for consistency)
+#' @param site Name of the site or center 
 #' @param output_format (optional) output format for the check
 #' @return missing drug records
 #' @example
@@ -2649,6 +2655,82 @@ invalid_choice_code <- function(cohort, site, report, output_format = "log") {
                                               infer_site = F))
       } 
     }
+  }
+  
+  return(output)
+}
+
+#' Check for case count less than adjusted target.  
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center
+#' @param output_format (optional) output format for the check
+#' @return missing drug records
+#' @example
+#' less_than_adjusted_target(cohort = "Prostate", site = "VICC", output_format = "log")
+less_than_adjusted_target <- function(cohort, site, report, output_format = "log", phase = 1) {
+  output <- NULL
+  
+  obj_upload <- config$uploads[[cohort]][[site]]
+  data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
+  
+  n_current <- get_bpc_case_count(data)
+  
+  # read samples for cohort from patient table
+  query <- glue("SELECT adjusted_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
+  n_adj <- as.integer(unlist(as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))))
+  
+  output <- NULL
+  if (n_current < n_adj) {
+    output <- format_output(value = glue("{n_current}-->{n_adj} (add {n_adj - n_current})"), 
+                            cohort = cohort, 
+                            site = site,
+                            output_format = output_format,
+                            column_name = config$column_name$patient_id, 
+                            synid = obj_upload$data1,
+                            patient_id = NA, 
+                            instrument = NA, 
+                            instance = NA,
+                            check_no = 51,
+                            infer_site = F)
+  }
+  
+  return(output)
+}
+
+#' Check for case count greater than adjusted target.  
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center
+#' @param output_format (optional) output format for the check
+#' @return missing drug records
+#' @example
+#' greater_than_adjusted_target(cohort = "Prostate", site = "VICC", output_format = "log")
+greater_than_adjusted_target <- function(cohort, site, report, output_format = "log", phase = 1) {
+  output <- NULL
+  
+  obj_upload <- config$uploads[[cohort]][[site]]
+  data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
+  
+  n_current <- get_bpc_case_count(data)
+  
+  # read samples for cohort from patient table
+  query <- glue("SELECT adjusted_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
+  n_adj <- as.integer(unlist(as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))))
+  
+  output <- NULL
+  if (n_current > n_adj) {
+    output <- format_output(value = glue("{n_current}-->{n_adj} (remove {n_current - n_adj})"), 
+                            cohort = cohort, 
+                            site = site,
+                            output_format = output_format,
+                            column_name = config$column_name$patient_id, 
+                            synid = obj_upload$data1,
+                            patient_id = NA, 
+                            instrument = NA, 
+                            instance = NA,
+                            check_no = 52,
+                            infer_site = F)
   }
   
   return(output)
