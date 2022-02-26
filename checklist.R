@@ -1715,10 +1715,8 @@ patient_count_too_small <- function(cohort, site, report, output_format = "log",
   # read upload
   obj_upload <- config$uploads[[cohort]][[site]]
   data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
-  patient_id <- data[[config$column_name$patient_id]]
-  n_total <- length(unique(patient_id))
-  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
-  n_current = n_total - n_irr
+  
+  n_current <- get_bpc_case_count(data)
   
   # read samples for cohort from patient table
   query <- glue("SELECT target_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
@@ -2481,10 +2479,8 @@ current_count_not_target <- function(cohort, site, report, output_format = "log"
   # read upload
   obj_upload <- config$uploads[[cohort]][[site]]
   data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
-  patient_id <- data[[config$column_name$patient_id]]
-  n_total <- length(unique(patient_id))
-  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
-  n_current = n_total - n_irr
+  
+  n_current <- get_bpc_case_count(data)
   
   # read samples for cohort from patient table
   query <- glue("SELECT target_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
@@ -2522,10 +2518,8 @@ patient_count_too_large <- function(cohort, site, report, output_format = "log",
   # read upload
   obj_upload <- config$uploads[[cohort]][[site]]
   data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
-  patient_id <- data[[config$column_name$patient_id]]
-  n_total <- length(unique(patient_id))
-  n_irr <- length(unique(patient_id[grepl(pattern = "[-_]2$", x = patient_id)]))
-  n_current = n_total - n_irr
+  
+  n_current <- get_bpc_case_count(data)
   
   # read samples for cohort from patient table
   query <- glue("SELECT target_cases FROM {config$synapse$target_count$id} WHERE cohort = '{cohort}' AND site = '{site}' AND phase = {phase}")
