@@ -270,6 +270,7 @@ report:
   - 26
   - 27
   - 35
+  - 53
   comparison:
   - 3
   - 4
@@ -670,3 +671,10 @@ checks:
     label: greater_than_adjusted_target
     description: Case count is greater than adjusted target count.
     action: Please confirm case count. 
+  53: 
+    implemented: 1
+    deprecated: 0
+    level: error
+    label: character_double_value
+    description: Column contains characters converted to doubles.
+    action: Please check to ensure values match uploaded data.  
