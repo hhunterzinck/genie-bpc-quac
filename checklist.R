@@ -2628,9 +2628,28 @@ invalid_choice_code <- function(cohort, site, report, output_format = "log") {
   for (i in 1:length(data)) {
     var_name = colnames(data)[i]
     choices <- dd %>% filter(`Variable / Field Name` == var_name) %>% select(`Choices, Calculations, OR Slider Labels`)
-    if (!is.na(choices)) {
+    if (nrow(choices) && !is.na(choices)) {
       codes <- parse_mapping(choices)[,"codes"]
-      idx_invalid_col <- which(!is.element(data[,i], codes))
-    } 
+      if (is_double(codes)) {
+        codes <- append(codes, as.double(codes))
+      }
+      idx_invalid <- which(!is.element(data[,i], c(NA, codes)))
+      
+      if (length(idx_invalid)) {
+        output <- rbind(output, format_output(value = data[idx_invalid,i], 
+                                              cohort = cohort, 
+                                              site = site,
+                                              output_format = output_format,
+                                              column_name = colnames(data)[i], 
+                                              synid = obj_upload$data1,
+                                              patient_id = data[idx_invalid, config$column_name$patient_id], 
+                                              instrument = data[idx_invalid, config$column_name$instrument], 
+                                              instance = data[idx_invalid, config$column_name$instance],
+                                              check_no = 50,
+                                              infer_site = F))
+      } 
+    }
   }
+  
+  return(output)
 }
