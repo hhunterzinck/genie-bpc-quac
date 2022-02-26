@@ -680,3 +680,45 @@ capitalize <- function(str) {
   
   return(glue(first, suffix))
 }
+
+# string operations -------------------
+
+trim_string <- function(str) {
+  front <- gsub(pattern = "^[[:space:]]+", replacement = "", x = str)
+  back <- gsub(pattern = "[[:space:]]+$", replacement = "", x = front)
+  
+  return(back)
+}
+
+merge_last_elements <- function(x, delim) {
+  
+  y <- c()
+  y[1] = x[1]
+  y[2] <- paste0(x[2:length(x)], collapse = delim)
+  return(y)
+}
+
+#' Perform string split operation but only on the first
+#' occurrence of the split character.
+strsplit_first <- function(x, split) {
+  
+  unmerged <- strsplit(x = x, split = split)
+  remerge <- lapply(unmerged, merge_last_elements, delim = split)
+  
+  return(remerge)
+}
+
+#' Parse a REDCap data dictionary choices mapping string.
+#' @param str REDCap data dictionary mapping string
+#' @return data frame
+parse_mapping <- function(str) {
+  
+  clean <- trim_string(gsub(pattern = "\"", replacement = "", x = str))
+  splt <- strsplit_first(strsplit(x = clean, split = "|", fixed = T)[[1]], split = ",")
+  
+  codes <- unlist(lapply(splt, FUN = function(x) {return(trim_string(x[1]))}))
+  values <- unlist(lapply(splt, FUN = function(x) {return(trim_string(x[2]))}))
+  mapping <- data.frame(cbind(codes, values), stringsAsFactors = F)
+  
+  return(mapping)
+}

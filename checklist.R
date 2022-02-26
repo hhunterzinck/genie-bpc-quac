@@ -2603,3 +2603,53 @@ quac_required_column_missing <- function(cohort, site, report, output_format = "
                           infer_site = F)
   return(output)
 }
+
+#' Check for missing drug name when drug start and/or end date is specified.
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center (not required, included for consistency)
+#' @param output_format (optional) output format for the check
+#' @return missing drug records
+#' @example
+#' invalid_choice_code(cohort = "Prostate", site = "VICC", output_format = "log")
+invalid_choice_code <- function(cohort, site, report, output_format = "log") {
+ 
+  output <- NULL
+  
+  obj_upload <- config$uploads[[cohort]][[site]]
+  data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
+  
+  synid_dd <- get_bpc_synid_prissmm(synid_table_prissmm = config$synapse$prissmm$id, 
+                                          cohort = cohort,
+                                          file_name = "Data Dictionary non-PHI")
+  dd <- get_data(synid_dd)
+  
+  idx_invalid <- c()
+  for (i in 1:length(data)) {
+    var_name = colnames(data)[i]
+    choices <- dd %>% filter(`Variable / Field Name` == var_name) %>% select(`Choices, Calculations, OR Slider Labels`)
+    if (nrow(choices) && !is.na(choices)) {
+      codes <- parse_mapping(choices)[,"codes"]
+      if (is_double(codes)) {
+        codes <- append(codes, as.double(codes))
+      }
+      idx_invalid <- which(!is.element(data[,i], c(NA, codes)))
+      
+      if (length(idx_invalid)) {
+        output <- rbind(output, format_output(value = data[idx_invalid,i], 
+                                              cohort = cohort, 
+                                              site = site,
+                                              output_format = output_format,
+                                              column_name = colnames(data)[i], 
+                                              synid = obj_upload$data1,
+                                              patient_id = data[idx_invalid, config$column_name$patient_id], 
+                                              instrument = data[idx_invalid, config$column_name$instrument], 
+                                              instance = data[idx_invalid, config$column_name$instance],
+                                              check_no = 50,
+                                              infer_site = F))
+      } 
+    }
+  }
+  
+  return(output)
+}
