@@ -604,7 +604,7 @@ checks:
   43:
     implemented: 1
     deprecated: 0
-    level: error
+    level: warning
     label: ct_drug_not_investigational
     description: Drug on a clinical trial regimen is not masked as an Investigational Drug. 
     action: Please mask the drug name with the Investigational Drug label.
