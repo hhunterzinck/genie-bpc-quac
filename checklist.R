@@ -2761,7 +2761,7 @@ character_double_value <- function(cohort, site, report, output_format = "log") 
       idx = which(!sapply(data[,i], is_double))
       data_col <- data[,i]
       data_col[idx] = NA
-      comp <- cbind(data_col, as.character(as.double(data_col)))
+      comp <- cbind(as.character(data_col), as.character(as.double(data_col)))
                              
        if (!identical(comp[,1], comp[,2])) {
          output <- rbind(output, format_output(value = NA, 
