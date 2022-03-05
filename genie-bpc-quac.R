@@ -109,6 +109,7 @@ tic <- as.double(Sys.time())
 # libraries
 library(dplyr)
 library(openxlsx)
+library(rjson)
 library(synapser)
 
 # functions

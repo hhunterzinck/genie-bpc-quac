@@ -546,34 +546,40 @@ get_auth_token <- function(path) {
 #' @return TRUE for successful login; F otherwise
 synLogin <- function(auth = NA, silent = T) {
   
-  # default synLogin behavior
-  if (is.na(auth)) {
+  secret <- Sys.getenv("SCHEDULED_JOB_SECRETS")
+  if (secret != "") {
+    # Synapse token stored as secret in json string
+    syn = synapser::synLogin(silent = T, authToken = fromJSON(secret)$SYNAPSE_AUTH_TOKEN)
+  } else if (auth == "~/.synapseConfig" || is.na(auth)) {
+    # default Synapse behavior
     syn <- synapser::synLogin(silent = silent)
-    return(T)
-  }
-  
-  token = auth
-  
-  # extract token from .synapseConfig
-  if (grepl(x = auth, pattern = "\\.synapseConfig$")) {
-    token = get_auth_token(auth)
+  } else {
     
-    if (is.na(token)) {
-      return(F)
+    # in case pat passed directly
+    token <- auth
+    
+    # extract token from custom path to .synapseConfig
+    if (grepl(x = auth, pattern = "\\.synapseConfig$")) {
+      token = get_auth_token(auth)
+      
+      if (is.na(token)) {
+        return(F)
+      }
     }
+    
+    # login with token
+    syn <- tryCatch({
+      synapser::synLogin(authToken = token, silent = silent)
+    }, error = function(cond) {
+      return(F)
+    })
   }
   
-  # login
-  syn <- tryCatch({
-    synapser::synLogin(authToken = token, silent = silent)
-  }, error = function(cond) {
-    return(F)
-  })
-  
+  # NULL returned indicates successful login
   if (is.null(syn)) {
     return(T)
   }
-  return(syn)
+  return(F)
 }
 
 #' Store a file on Synapse with options to define provenance.
