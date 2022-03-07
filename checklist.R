@@ -1250,10 +1250,9 @@ sample_not_in_main_genie <- function(cohort, site, report, output_format = "log"
   bpc_not_mg_sid <- get_added(bpc_sids, mg_ids$SAMPLE_ID)
   bpc_not_mg_pid <- c()
   if (length(bpc_not_mg_sid)) {
-    
-    bpc_not_mg_pid <- mg_ids %>% 
-      filter(SAMPLE_ID %in% bpc_not_mg_sid) %>%
-      select(PATIENT_ID)
+    bpc_not_mg_pid <- as.character(unlist(bpc_data %>% 
+      filter((!!as.symbol(config$column_name$sample_id)) %in% bpc_not_mg_sid) %>%
+      select((!!as.symbol(config$column_name$patient_id)))))
   }
   
   output <- format_output(value = bpc_not_mg_sid, 
@@ -1362,7 +1361,7 @@ col_data_datetime_format_mismatch <- function(cohort, site, report, output_forma
 col_entry_datetime_format_mismatch <- function(cohort, site, report, output_format = "log") {
   
   obj_upload <- config$uploads[[cohort]][[site]]
-  data <- get_bpc_data(cohort = cohort, site = site,                                report = report, obj = obj_upload)
+  data <- get_bpc_data(cohort = cohort, site = site, report = report, obj = obj_upload)
   
   synid_file_dd <- get_bpc_synid_prissmm(synid_table_prissmm = config$synapse$prissmm$id, 
                                          cohort = cohort,
@@ -2681,7 +2680,7 @@ less_than_adjusted_target <- function(cohort, site, report, output_format = "log
   n_adj <- as.integer(unlist(as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))))
   
   output <- NULL
-  if (n_current < n_adj) {
+  if (length(n_adj) && n_current < n_adj) {
     output <- format_output(value = glue("{n_current}-->{n_adj} (add {n_adj - n_current})"), 
                             cohort = cohort, 
                             site = site,
@@ -2719,7 +2718,7 @@ greater_than_adjusted_target <- function(cohort, site, report, output_format = "
   n_adj <- as.integer(unlist(as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))))
   
   output <- NULL
-  if (n_current > n_adj) {
+  if (length(n_adj) && n_current > n_adj) {
     output <- format_output(value = glue("{n_current}-->{n_adj} (remove {n_current - n_adj})"), 
                             cohort = cohort, 
                             site = site,
