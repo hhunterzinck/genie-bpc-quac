@@ -168,7 +168,7 @@ check_fxns <- get_check_functions(check_labels)
 if (overview) {
   cat(glue("Checks ({length(check_fxns)}):"), "\n")
   for (check_no in check_nos_valid) {
-    cat(glue("- check {sprintf('%02d', check_no)} ({config$checks[[check_no]]$label}): {config$checks[[check_no]]$description} {config$checks[[check_no]]$action}"), "\n")
+    cat(glue("- {config$checks[[check_no]]$level} {sprintf('%02d', check_no)} ({config$checks[[check_no]]$label}): {config$checks[[check_no]]$description} {config$checks[[check_no]]$action}"), "\n")
   }
 } else {
   if (length(check_fxns)) {
