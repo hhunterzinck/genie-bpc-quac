@@ -92,43 +92,200 @@ Rscript genie-bpc-quac.R -c {cohort} -s {site} -r upload -l error -v -a $SYNAPSE
 
 Upload reports run quality checks on the data uploaded by individual sites.  
 
-To see an overview of all checks implemented in the upload report:
+To see an overview of error level checks implemented in the upload report:
 ```
-Rscript genie-bpc-quac.R -r upload -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
+Rscript genie-bpc-quac.R -r upload -c {cohort} -s {site} -l error -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs:
+
+```
+Checks (22):
+- fail 44 (file_not_csv): The file does not appear to be a CSV file. Please check the file format and ensure the correct data was uploaded.
+- fail 45 (data_header_col_mismatch): The number of columns in the data and header files do not match. Please check the data and header files have the same corresponding columns.
+- fail 49 (quac_required_column_missing): File must contain column but column not found. Please ensure this column is included.
+- error 03 (patient_added): Patient ID added. Please confirm that patient was meant to be added
+- error 04 (patient_removed): Patient ID removed. Please confirm that patient was meant to be removed
+- error 07 (empty_row): Row entries are all missing. Please remove row from upload file.
+- error 08 (missing_sample_id): Sample ID is missing. Please fill in missing sample ID.
+- error 12 (col_data_type_sor_mismatch): Column data type does not match data type specified in scope of release. Please check values for column and ensure that they match the appropriate datatype.
+- error 13 (col_entry_data_type_sor_mismatch): Entry data type does not match data type specified in scope of release. Please check value for column and ensure that it matches the appropriate data type.
+- error 14 (no_mapped_diag): Mapped diagnosis is missing. Please fill in missing diagnosis.
+- error 17 (sample_not_in_main_genie): Sample ID does not match any ID on the main GENIE sample list. Please correct or remove sample ID.
+- error 18 (patient_not_in_main_genie): Patient ID does not match any ID on the main GENIE patient list. Please correct or remove patient ID.
+- error 20 (col_entry_datetime_format_mismatch): Timestamp value is not formatted correctly. Please correct the format of the timestamp to 'YYYY-mm-dd HH:MM:SS'.
+- error 22 (col_entry_date_format_mismatch): Date value is not formatted correctly. Please correct the format of the date to 'YYYY-mm-dd'.
+- error 23 (col_empty_but_required): Column values are all missing for required column. Please fill in required data, if applicable.
+- error 26 (patient_marked_removed_from_bpc): Patient has been marked as removed from BPC. Please remove the patient and all associated data from the dataset.
+- error 27 (sample_marked_removed_from_bpc): Sample has been marked as removed from BPC. Please remove the sample and all associated data from the dataset.
+- error 42 (required_not_uploaded): Required variable was not uploaded. Please add the required variable to the dataset.
+- error 48 (cpt_sample_type_numeric): cpt_sample_type is numeric instead of text. Please replace numeric value with appropriate text label.
+- error 50 (invalid_choice_code): The selected value does not match value choices in the data dictionary. Please confirm selected value matches a valid choice.
+- error 51 (less_than_adjusted_target): Case count is less than adjusted target count. Please confirm case count and submit any retracted samples.
+- error 52 (greater_than_adjusted_target): Case count is greater than adjusted target count. Please confirm case count.
+```
+
+To see an overview of warning level checks implemented in the upload report:
+```
+Rscript genie-bpc-quac.R -r upload -c {cohort} -s {site} -l warning -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs:
+
+```
+Checks (14):
+- fail 44 (file_not_csv): The file does not appear to be a CSV file. Please check the file format and ensure the correct data was uploaded.
+- fail 45 (data_header_col_mismatch): The number of columns in the data and header files do not match. Please check the data and header files have the same corresponding columns.
+- fail 49 (quac_required_column_missing): File must contain column but column not found. Please ensure this column is included.
+- warning 05 (sample_added): Sample ID added. Please confirm that sample was meant to be added
+- warning 06 (sample_removed): Sample ID removed. Please confirm that sample was meant to be removed
+- warning 01 (col_import_template_added): Column found in file upload but not import template. Please remove column from upload file.
+- warning 02 (col_import_template_removed): Column found in import template but not file upload. Please confirm that column has no relevant data; otherwise, include column in upload.
+- warning 09 (col_empty): Column values are all missing. Please confirm that site has no data for the column.
+- warning 19 (col_data_datetime_format_mismatch): Column timestamps are not formatted correctly. Please correct the format of the timestamps to 'YYYY-mm-dd HH:MM:SS'.
+- warning 21 (col_data_date_format_mismatch): Column dates are not formatted correctly. Please correct the format of the dates to 'YYYY-mm-dd'.
+- warning 28 (patient_count_too_small): Current case count is less than target count. Please add cases to meet target.
+- warning 33 (irr_sample): Sample ID looks like an IRR sample. Please remove sample if IRR analyses are no longer relevant.
+- warning 34 (irr_patient): Patient ID looks like an IRR patient. Please remove patient if IRR analyses are no longer relevant.
+- warning 47 (patient_count_too_large): Current case count is greater than target count. Please remove cases to meet target.
 ```
 
 ### masking
 
 Masking reports run drug masking quality checks on the data uploaded by individual sites.  
 
-To see an overview of all checks implemented in the masking report:
+To see an overview of error level checks implemented in the masking report:
 ```
-Rscript genie-bpc-quac.R -r masking -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
+Rscript genie-bpc-quac.R -r masking -c {cohort} -s {site} -l error -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs:
+```
+Checks (5):
+- fail 44 (file_not_csv): The file does not appear to be a CSV file. Please check the file format and ensure the correct data was uploaded.
+- fail 45 (data_header_col_mismatch): The number of columns in the data and header files do not match. Please check the data and header files have the same corresponding columns.
+- error 29 (investigational_drug_duration): Investigational drug duration is greater than 1 day. Please adjust start and end dates of drug duration to be the same day.
+- error 30 (investigational_drug_other_name): Investigational drug has the other drug column filled in. Please remove the name in the other drug column.
+- error 31 (investigational_drug_not_ct): Investigational drug is not marked as being in a clinical trial. Please indicate that the investigational drug is in a clinical trial.
+```
+
+To see an overview of warning level checks implemented in the masking report:
+```
+Rscript genie-bpc-quac.R -r masking -c {cohort} -s {site} -l warning -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs:
+```
+Checks (4):
+- fail 44 (file_not_csv): The file does not appear to be a CSV file. Please check the file format and ensure the correct data was uploaded.
+- fail 45 (data_header_col_mismatch): The number of columns in the data and header files do not match. Please check the data and header files have the same corresponding columns.
+- warning 32 (drug_not_fda_approved): Drug does not have a valid associated FDA approval year in HemOnc. Please review the drug instance and determine if the drug name needs to be masked.
+- warning 43 (ct_drug_not_investigational): Drug on a clinical trial regimen is not masked as an Investigational Drug. Please mask the drug name with the Investigational Drug label.
 ```
 
 ### table
 
 Table reports run checks on the data once it has been merged and uploaded from individual data files into Synapse tables.  
 
-To see an overview of all checks implemented in the table report:
+To see an overview of error level checks implemented in the table report:
 ```
-Rscript genie-bpc-quac.R -r table -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
+Rscript genie-bpc-quac.R -r table -c {cohort} -s {site} -l error -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs:
+```
+Checks (8):
+- error 07 (empty_row): Row entries are all missing. Please remove row from upload file.
+- error 12 (col_data_type_sor_mismatch): Column data type does not match data type specified in scope of release. Please check values for column and ensure that they match the appropriate datatype.
+- error 13 (col_entry_data_type_sor_mismatch): Entry data type does not match data type specified in scope of release. Please check value for column and ensure that it matches the appropriate data type.
+- error 14 (no_mapped_diag): Mapped diagnosis is missing. Please fill in missing diagnosis.
+- error 25 (col_sor_not_table): Column found in the scope of release but not the table. Please confirm that column has no relevant data; otherwise, include column in table.
+- error 26 (patient_marked_removed_from_bpc): Patient has been marked as removed from BPC. Please remove the patient and all associated data from the dataset.
+- error 27 (sample_marked_removed_from_bpc): Sample has been marked as removed from BPC. Please remove the sample and all associated data from the dataset.
+- error 53 (character_double_value): Column contains characters converted to doubles. Please check to ensure values match uploaded data.
+```
+
+To see an overview of warning level checks implemented in the table report:
+```
+Rscript genie-bpc-quac.R -r table -c {cohort} -s {site} -l warning -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs:
+```
+Checks (3):
+- warning 09 (col_empty): Column values are all missing. Please confirm that site has no data for the column.
+- warning 24 (col_table_not_sor): Column found in table but not the scope of release. Please remove column from table.
+- warning 35 (col_empty_site_not_others): Column is empty for site but not for other sites. Please confirm that site has no data for the column.
 ```
 
 ### comparison
 
 Comparison reports compare the current version of the data in the Synapse tables to the version of the same tables representing the previous data upload for the cohort, if applicable.   
 
-To see an overview of all checks implemented in the comparison report:
+To see an overview of error level checks implemented in the comparison report:
 ```
-Rscript genie-bpc-quac.R -r comparison -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
+Rscript genie-bpc-quac.R -r comparison -c {cohort} -s {site} -l error -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs: 
+```
+Checks (4):
+- error 03 (patient_added): Patient ID added. Please confirm that patient was meant to be added
+- error 04 (patient_removed): Patient ID removed. Please confirm that patient was meant to be removed
+- error 36 (col_five_perc_inc_missing): Column had a greater than 5% increase in missingness since last upload. Please ensure that 5% increase in missing values is expected.
+- error 38 (col_removed): Column removed since last upload. Please ensure that column was intentionally removed.
+```
+
+To see an overview of warning level checks implemented in the comparison report:
+```
+Rscript genie-bpc-quac.R -r comparison -c {cohort} -s {site} -l warning -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs: 
+```
+Checks (7):
+- warning 05 (sample_added): Sample ID added. Please confirm that sample was meant to be added
+- warning 06 (sample_removed): Sample ID removed. Please confirm that sample was meant to be removed
+- warning 15 (rows_added): Row added. Please confirm that row was meant to be added.
+- warning 16 (rows_removed): Row removed. Please confirm that row was meant to be removed.
+- warning 37 (col_five_perc_dec_missing): Column had a greater than 5% decrease in missingness since last upload. Please ensure that 5% decrease in missing values is expected.
+- warning 39 (col_added): Column added since last upload. Please ensure that column was intentionally added.
+- warning 40 (file_added): File added since last release. Please ensure that file was intentionally added.
 ```
 
 ### release
 
 Release reports compare the current and previous final data release files, if applicable.  
 
-To see an overview of all checks implemented in the release report:
+To see an overview of error level checks implemented in the release report:
 ```
-Rscript genie-bpc-quac.R -r release -c {cohort} -s {site} -l all -v -a $SYNAPSE_AUTH_TOKEN -o
+Rscript genie-bpc-quac.R -r release -c {cohort} -s {site} -l error -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs:
+```
+Checks (5):
+- error 03 (patient_added): Patient ID added. Please confirm that patient was meant to be added
+- error 04 (patient_removed): Patient ID removed. Please confirm that patient was meant to be removed
+- error 36 (col_five_perc_inc_missing): Column had a greater than 5% increase in missingness since last upload. Please ensure that 5% increase in missing values is expected.
+- error 38 (col_removed): Column removed since last upload. Please ensure that column was intentionally removed.
+- error 41 (file_removed): File removed since last release. Please ensure that file was intentionally removed.
+```
+
+To see an overview of warning level checks implemented in the release report:
+```
+Rscript genie-bpc-quac.R -r release -c {cohort} -s {site} -l warning -v -a $SYNAPSE_AUTH_TOKEN -o
+```
+
+which outputs:
+
+```
+Checks (7):
+- warning 05 (sample_added): Sample ID added. Please confirm that sample was meant to be added
+- warning 06 (sample_removed): Sample ID removed. Please confirm that sample was meant to be removed
+- warning 15 (rows_added): Row added. Please confirm that row was meant to be added.
+- warning 16 (rows_removed): Row removed. Please confirm that row was meant to be removed.
+- warning 37 (col_five_perc_dec_missing): Column had a greater than 5% decrease in missingness since last upload. Please ensure that 5% decrease in missing values is expected.
+- warning 39 (col_added): Column added since last upload. Please ensure that column was intentionally added.
+- warning 40 (file_added): File added since last release. Please ensure that file was intentionally added.
 ```
