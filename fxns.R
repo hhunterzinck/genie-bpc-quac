@@ -106,7 +106,9 @@ get_data <- function(synid, version = NA, sheet = 1) {
       data <- read.xlsx(ent$path, check.names = FALSE, sheet = sheet)
     } else {
       data <- suppressWarnings(read.csv(ent$path, check.names = F,
-                                        na.strings = c(""), stringsAsFactors = F))
+                                        na.strings = c(""), 
+                                        stringsAsFactors = F,
+                                        colClasses = "character"))
     }
   }
 
@@ -156,7 +158,8 @@ get_data_filtered_file <- function(synid, column_name, col_value, select = NA,
   
   ent <- synGet(as.character(synid), version = version)
   data <- read.csv(ent$path, check.names = F, na.strings = c(""),
-                   stringsAsFactors = F)
+                   stringsAsFactors = F,
+                   colClasses = "character")
   
   idx_filter <- c()
   for(i in seq_len(length(column_name))) {
