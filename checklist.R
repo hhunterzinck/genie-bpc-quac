@@ -387,20 +387,21 @@ get_bpc_patient_sample_added_removed <- function(cohort, site, report,
                                   obj = list(synid_table = synid_table, previous = F, select = NA))
     
     # get upload data excluding IRR cases
+    synid_entity_source <- config$uploads[[cohort]][[site]]
     data_current_irr <- get_bpc_data(cohort = cohort, site = site, report = report, 
-                                obj = config$uploads[[cohort]][[site]])
+                                obj = synid_entity_source)
     data_current <- data_current_irr %>%
       filter(!grepl(pattern = "[_-]2$", x = (!!as.symbol(config$column_name$patient_id))))
   } else if (report == "table" || report == "comparison") {
     synid_tables <- get_synid_from_table(config$synapse$tables_view$id,
                                          condition = "double_curated = false",
                                          with_names = T)
-    synid_table <- as.character(synid_tables[table_name])
+    synid_entity_source <- as.character(synid_tables[table_name])
     
     data_current <- get_bpc_data(cohort = cohort, site = site, report = report, 
-                                 obj = list(synid_table = synid_table, previous = F, select = NA))
+                                 obj = list(synid_table = synid_entity_source, previous = F, select = NA))
     data_previous <- get_bpc_data(cohort = cohort, site = site, report = report, 
-                                  obj = list(synid_table = synid_table, previous = T, select = NA))
+                                  obj = list(synid_table = synid_entity_source, previous = T, select = NA))
   } else if (report == "release") {
     
     version_current <- config$release[[cohort]]$current
