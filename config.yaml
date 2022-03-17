@@ -271,6 +271,8 @@ report:
   - 50
   - 51
   - 52
+  - 54
+  - 55
   table:
   - 7
   - 9
@@ -341,7 +343,7 @@ checks:
   4:
     implemented: 1
     deprecated: 0
-    level: error
+    level: warning
     label: patient_removed
     description: Patient ID removed.
     action: Please confirm that patient was meant to be removed
@@ -690,3 +692,17 @@ checks:
     label: character_double_value
     description: Column contains characters converted to doubles.
     action: Please check to ensure values match uploaded data.  
+  54:
+    implemented: 1
+    deprecated: 0
+    level: error
+    label: patient_removed_not_retracted
+    description: Patient ID removed but not retracted.
+    action: Please confirm that patient was meant to be removed and submit via retraction form.
+  55:
+    implemented: 1
+    deprecated: 0
+    level: error
+    label: sample_removed_not_retracted
+    description: Sample ID removed but not retracted.
+    action: Please confirm that sample was meant to be removed and submit via retraction form.

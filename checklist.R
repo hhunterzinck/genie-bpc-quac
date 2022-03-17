@@ -359,23 +359,35 @@ get_bpc_data <- function(cohort, site, report, obj = NULL) {
 #' @param check_patient If TRUE, check patient IDs; otherwise, check sample IDs.
 #' @param check_added If TRUE, check IDs added since upload; otherwise, check
 #'   IDs removed.
+#' @param account_for_retracted if TRUE, account for retracted ids when looking
+#'   at IDs removed; otherwise, report all IDs removed regardless of retraction status
 #' @return vector of IDs that changed between uploads
 get_bpc_patient_sample_added_removed <- function(cohort, site, report, 
-                                             check_patient, check_added) {
+                                             check_patient, check_added,
+                                             account_for_retracted = F) {
   
   column_name <- ""
   table_name <- ""
   synid_entity_source <- NA
   results <- list()
+  retracted <- c()
   
   if (check_patient) {
     column_name <- config$column_name$patient_id
     table_name <- config$table_name$patient_id
     file_name <- config$file_name$patient_file
+    
+    if (account_for_retracted) {
+      retracted <- get_retracted_patients(cohort) 
+    }
   } else {
     column_name <- config$column_name$sample_id
     table_name <- config$table_name$sample_id
     file_name <- config$file_name$sample_file
+    
+    if (account_for_retracted) {
+      retracted <- get_retracted_samples(cohort)
+    }
   }
   
   if (report == "upload") {
@@ -426,7 +438,7 @@ get_bpc_patient_sample_added_removed <- function(cohort, site, report,
   if (check_added) {
     results$ids <- setdiff(data_current[[column_name]], data_previous[[column_name]])
   } else {
-    results$ids <- setdiff(data_previous[[column_name]], data_current[[column_name]])
+    results$ids <- setdiff(data_previous[[column_name]], c(retracted, data_current[[column_name]]))
   }
   
   results$column_name = column_name
@@ -573,6 +585,34 @@ get_bpc_case_count <- function(data) {
   n_current = n_total - n_irr
   
   return(n_current)
+}
+
+#' Get list of patients retracted for a cohort
+#' @param cohort cohort label of interest
+#' @return vector of patient IDs or NULL if no retracted patient IDs
+#' @example get_retracted_patients(cohort = "BLADDER")
+get_retracted_patients <- function(cohort) {
+  query <- glue("SELECT record_id FROM {config$synapse$rm_pat$id} WHERE {cohort} = 'true'")
+  retracted <- as.character(unlist(as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))))
+  
+  if(length(retracted)) {
+    return(retracted)
+  }
+  return(NULL)
+}
+
+#' Get list of samples retracted for a cohort
+#' @param cohort cohort label of interest
+#' @return vector of sample IDs or NULL if no retracted sample IDs
+#' @example get_retracted_samples(cohort = "BLADDER")
+get_retracted_samples <- function(cohort) {
+  query <- glue("SELECT SAMPLE_ID FROM {config$synapse$rm_sam$id} WHERE {cohort} = 'true'")
+  retracted <- as.character(unlist(as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))))
+  
+  if(length(retracted)) {
+    return(retracted)
+  }
+  return(NULL)
 }
 
 # hemonc functions ------------------------------------
@@ -2785,5 +2825,73 @@ character_double_value <- function(cohort, site, report, output_format = "log") 
     }
   }
 
+  return(output)
+}
+
+#' Check for removed patients that are not in the retraction table.   
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center
+#' @param output_format (optional) output format for the check
+#' @return columns with character doubles
+#' @example
+#' patient_removed_not_retracted(cohort = "Prostate", site = "VICC", output_format = "log")
+patient_removed_not_retracted <- function(cohort, site, report, output_format = "log") {
+  results <- get_bpc_patient_sample_added_removed(cohort = cohort, 
+                                                  site = site,  
+                                                  report = report,
+                                                  check_patient = T, 
+                                                  check_added = F,
+                                                  account_for_retracted = T)
+  output <- format_output(results$ids, 
+                          cohort = cohort, 
+                          site = site,
+                          output_format = output_format,
+                          column_name = results$column_name, 
+                          synid = results$synid_entity_source,
+                          check_no = 54,
+                          infer_site = T)
+  
+  return(output)
+}
+
+#' Get sample IDs removed in the most recent upload
+#' relative to the last upload and not retracted
+#' or associated with retracted patient.
+#'
+#' @param cohort Name of the cohort
+#' @param site Name of the site or center
+#' @param output_format (optional) output format for the check
+#' @return sample IDs removed in the most recent upload, formatted
+#' according to the specified output_format
+#' @example
+#' sample_removed_not_retracted(cohort = "BrCa", output_format = "log")
+sample_removed_not_retracted <- function(cohort, site, report, output_format = "log") {
+  
+  output <- NULL
+  
+  results <- get_bpc_patient_sample_added_removed(cohort = cohort, 
+                                                  site = site,  
+                                                  report = report,
+                                                  check_patient = F, 
+                                                  check_added = F,
+                                                  account_for_retracted = T)
+  retracted_pts <- get_retracted_patients(cohort)
+  for (i in 1:length(retracted_pts)) {
+    idx <- grep(pattern = retracted_pts[i], x = results$ids)
+    results$ids <- results$ids[-idx]
+  }
+  
+  if (length(results$ids)) {
+    output <- format_output(results$ids, 
+                            cohort = cohort, 
+                            site = site,
+                            output_format = output_format,
+                            column_name = results$column_name, 
+                            synid = results$synid_entity_source,
+                            check_no = 55,
+                            infer_site = T)
+  }
+  
   return(output)
 }
