@@ -1267,7 +1267,7 @@ rows_removed <- function(cohort, site, report, output_format = "log", debug = F)
                                             patient_id = data_removed$record_id,
                                             instrument = view$form[i],
                                             instance = if (!is.null(data_removed$redcap_repeat_instance)) data_removed$redcap_repeat_instance else NA,
-                                            check_no = 15,
+                                            check_no = 16,
                                             infer_site = F))
     }
   }
@@ -2063,7 +2063,7 @@ col_empty_site_not_others <- function(cohort, site, report, output_format = "log
   sites <- site
   
   if (is.na(site)) {
-    sites <- names(config$uploads[[cohort]])
+    sites <- setdiff(names(config$uploads[[cohort]]), config$constants$sage)
   }
   
   # gather data objects

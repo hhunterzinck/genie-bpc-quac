@@ -174,7 +174,7 @@ if (overview) {
   if (length(check_fxns)) {
     
     if (report == "upload" && sites == choice_all) {
-      sites <- names(config$uploads[[cohort]])
+      sites <- setdiff(names(config$uploads[[cohort]]), config$constants$sage)
     } else {
       site <- sites
     }
