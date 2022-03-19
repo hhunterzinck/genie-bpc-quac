@@ -100,15 +100,14 @@ Rscript genie-bpc-quac.R -r upload -c {cohort} -s {site} -l error -v -a $SYNAPSE
 which outputs:
 
 ```
-Checks (22):
+Checks (23):
 - fail 44 (file_not_csv): The file does not appear to be a CSV file. Please check the file format and ensure the correct data was uploaded.
 - fail 45 (data_header_col_mismatch): The number of columns in the data and header files do not match. Please check the data and header files have the same corresponding columns.
 - fail 49 (quac_required_column_missing): File must contain column but column not found. Please ensure this column is included.
 - error 03 (patient_added): Patient ID added. Please confirm that patient was meant to be added
-- error 04 (patient_removed): Patient ID removed. Please confirm that patient was meant to be removed
 - error 07 (empty_row): Row entries are all missing. Please remove row from upload file.
 - error 08 (missing_sample_id): Sample ID is missing. Please fill in missing sample ID.
-- error 12 (col_data_type_sor_mismatch): Column data type does not match data type specified in scope of release. Please check values for column and ensure that they match the appropriate datatype.
+- error 12 (col_data_type_sor_mismatch): Column data type does not match data type specified in scope of release. Please check values for column and ensure that they match the appropriate data type.
 - error 13 (col_entry_data_type_sor_mismatch): Entry data type does not match data type specified in scope of release. Please check value for column and ensure that it matches the appropriate data type.
 - error 14 (no_mapped_diag): Mapped diagnosis is missing. Please fill in missing diagnosis.
 - error 17 (sample_not_in_main_genie): Sample ID does not match any ID on the main GENIE sample list. Please correct or remove sample ID.
@@ -123,6 +122,8 @@ Checks (22):
 - error 50 (invalid_choice_code): The selected value does not match value choices in the data dictionary. Please confirm selected value matches a valid choice.
 - error 51 (less_than_adjusted_target): Case count is less than adjusted target count. Please confirm case count and submit any retracted samples.
 - error 52 (greater_than_adjusted_target): Case count is greater than adjusted target count. Please confirm case count.
+- error 54 (patient_removed_not_retracted): Patient ID removed but not retracted. Please confirm that patient was meant to be removed and submit via retraction form.
+- error 55 (sample_removed_not_retracted): Sample ID removed but not retracted. Please confirm that sample was meant to be removed and submit via retraction form.
 ```
 
 To see an overview of warning level checks implemented in the upload report:
@@ -133,10 +134,11 @@ Rscript genie-bpc-quac.R -r upload -c {cohort} -s {site} -l warning -v -a $SYNAP
 which outputs:
 
 ```
-Checks (14):
+Checks (15):
 - fail 44 (file_not_csv): The file does not appear to be a CSV file. Please check the file format and ensure the correct data was uploaded.
 - fail 45 (data_header_col_mismatch): The number of columns in the data and header files do not match. Please check the data and header files have the same corresponding columns.
 - fail 49 (quac_required_column_missing): File must contain column but column not found. Please ensure this column is included.
+- warning 04 (patient_removed): Patient ID removed. Please confirm that patient was meant to be removed
 - warning 05 (sample_added): Sample ID added. Please confirm that sample was meant to be added
 - warning 06 (sample_removed): Sample ID removed. Please confirm that sample was meant to be removed
 - warning 01 (col_import_template_added): Column found in file upload but not import template. Please remove column from upload file.
@@ -196,7 +198,7 @@ which outputs:
 ```
 Checks (8):
 - error 07 (empty_row): Row entries are all missing. Please remove row from upload file.
-- error 12 (col_data_type_sor_mismatch): Column data type does not match data type specified in scope of release. Please check values for column and ensure that they match the appropriate datatype.
+- error 12 (col_data_type_sor_mismatch): Column data type does not match data type specified in scope of release. Please check values for column and ensure that they match the appropriate data type.
 - error 13 (col_entry_data_type_sor_mismatch): Entry data type does not match data type specified in scope of release. Please check value for column and ensure that it matches the appropriate data type.
 - error 14 (no_mapped_diag): Mapped diagnosis is missing. Please fill in missing diagnosis.
 - error 25 (col_sor_not_table): Column found in the scope of release but not the table. Please confirm that column has no relevant data; otherwise, include column in table.
@@ -229,9 +231,8 @@ Rscript genie-bpc-quac.R -r comparison -c {cohort} -s {site} -l error -v -a $SYN
 
 which outputs: 
 ```
-Checks (4):
+Checks (3):
 - error 03 (patient_added): Patient ID added. Please confirm that patient was meant to be added
-- error 04 (patient_removed): Patient ID removed. Please confirm that patient was meant to be removed
 - error 36 (col_five_perc_inc_missing): Column had a greater than 5% increase in missingness since last upload. Please ensure that 5% increase in missing values is expected.
 - error 38 (col_removed): Column removed since last upload. Please ensure that column was intentionally removed.
 ```
@@ -243,7 +244,8 @@ Rscript genie-bpc-quac.R -r comparison -c {cohort} -s {site} -l warning -v -a $S
 
 which outputs: 
 ```
-Checks (7):
+Checks (8):
+- warning 04 (patient_removed): Patient ID removed. Please confirm that patient was meant to be removed
 - warning 05 (sample_added): Sample ID added. Please confirm that sample was meant to be added
 - warning 06 (sample_removed): Sample ID removed. Please confirm that sample was meant to be removed
 - warning 15 (rows_added): Row added. Please confirm that row was meant to be added.
@@ -264,9 +266,8 @@ Rscript genie-bpc-quac.R -r release -c {cohort} -s {site} -l error -v -a $SYNAPS
 
 which outputs:
 ```
-Checks (5):
+Checks (4):
 - error 03 (patient_added): Patient ID added. Please confirm that patient was meant to be added
-- error 04 (patient_removed): Patient ID removed. Please confirm that patient was meant to be removed
 - error 36 (col_five_perc_inc_missing): Column had a greater than 5% increase in missingness since last upload. Please ensure that 5% increase in missing values is expected.
 - error 38 (col_removed): Column removed since last upload. Please ensure that column was intentionally removed.
 - error 41 (file_removed): File removed since last release. Please ensure that file was intentionally removed.
@@ -280,7 +281,8 @@ Rscript genie-bpc-quac.R -r release -c {cohort} -s {site} -l warning -v -a $SYNA
 which outputs:
 
 ```
-Checks (7):
+Checks (8):
+- warning 04 (patient_removed): Patient ID removed. Please confirm that patient was meant to be removed
 - warning 05 (sample_added): Sample ID added. Please confirm that sample was meant to be added
 - warning 06 (sample_removed): Sample ID removed. Please confirm that sample was meant to be removed
 - warning 15 (rows_added): Row added. Please confirm that row was meant to be added.
