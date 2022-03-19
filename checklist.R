@@ -2063,7 +2063,7 @@ col_empty_site_not_others <- function(cohort, site, report, output_format = "log
   sites <- site
   
   if (is.na(site)) {
-    sites <- names(config$uploads[[cohort]])
+    sites <- setdiff(names(config$uploads[[cohort]]), config$constants$sage)
   }
   
   # gather data objects
