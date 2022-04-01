@@ -54,6 +54,28 @@ save_synapse <- args$save_to_synapse
 overview <- args$overview
 synapse_auth <- args$synapse_auth
 
+# setup ------------------------------------------------------------------------
+
+# start timer
+tic <- as.double(Sys.time())
+
+# libraries
+library(dplyr)
+library(openxlsx)
+library(rjson)
+library(synapser)
+
+# functions
+source("fxns.R")
+source("checklist.R")
+
+# synapse login
+syn <- synLogin(auth = synapse_auth)
+
+# update config
+config <- update_config_for_comparison_report(config)
+config <- update_config_for_release_report(config)
+
 # check user input -------------------------------------------------------------
 
 if (!is.null(number)) {
@@ -101,24 +123,6 @@ if (report == "upload" && sites == choice_all) {
   stop(paste0(msg1, msg2, msg3))
 }
 
-# setup ------------------------------------------------------------------------
-
-# start timer
-tic <- as.double(Sys.time())
-
-# libraries
-library(dplyr)
-library(openxlsx)
-library(rjson)
-library(synapser)
-
-# functions
-source("fxns.R")
-source("checklist.R")
-
-# synapse login
-syn <- synLogin(auth = synapse_auth)
-
 # parameter messaging ----------------------------------------
 
 if (verbose) {
@@ -128,8 +132,12 @@ if (verbose) {
   print(glue("- site(s):\t\t{sites}"))
   print(glue("- report:\t\t{report}"))
   if (report == "comparison") {
-    print(glue("  - previous: {config$comparison[[cohort]]$previous}"))
-    print(glue("  - current: {config$comparison[[cohort]]$current}"))
+    print(glue("  - previous:\t\t{config$comparison[[cohort]]$previous}"))
+    print(glue("  - current:\t\t{config$comparison[[cohort]]$current}"))
+  }
+  if (report == "release") {
+    print(glue("  - previous:\t\t{config$release[[cohort]]$previous}"))
+    print(glue("  - current:\t\t{config$release[[cohort]]$current}"))
   }
   print(glue("- level:\t\t{level}"))
   if (!is.null(number)) {

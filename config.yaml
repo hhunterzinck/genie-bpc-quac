@@ -20,11 +20,16 @@ synapse:
     name: Sample Clinical Database
     type: table
     description: Main GENIE reference of sample IDs
-#  version_date: 
-#    id: syn25837005
-#    name: Previous Upload Tracking
-#    type: table
-#    description: Date of previous upload by cohort
+  version_date: 
+    id: syn25837005
+    name: Previous Upload Tracking
+    type: table
+    description: Date of previous upload by cohort
+  version_release: 
+    id: syn27628075
+    name: Release Information
+    type: table
+    description: Release metadata and link to clinical data file folders.
   tables_view: 
     id: syn21446696
     name: Data table Information
@@ -197,44 +202,6 @@ output:
   NSCLC: syn25872287
   PANC: syn25882184
   Prostate: syn25976290
-comparison:
-  BrCa:
-    previous: 2021-05-20
-    current: 2021-09-16
-  CRC:
-    previous: 2021-05-20
-    current: 2021-07-16
-  NSCLC:
-    previous: 2022-02-07
-    current: 2022-03-18
-  PANC:
-    previous: 2022-01-20
-    current: 2022-02-18
-  Prostate:
-    previous: 2022-01-20
-    current: 2022-03-04
-  BLADDER:
-    previous: 2022-01-20
-    current: 2022-03-18
-release:
-  BrCa:
-    previous: 
-    current: 1.1-consortium
-  CRC:
-    previous: 1.1-consortium
-    current: 1.2-consortium
-  NSCLC:
-    previous: 2.1-consortium
-    current: 2.0-public
-  PANC:
-    previous: 
-    current: 1.1-consortium
-  Prostate:
-    previous: 
-    current: 1.1-consortium
-  BLADDER:
-    previous: 
-    current: 1.1-consortium
 report:
   upload:
   - 44
