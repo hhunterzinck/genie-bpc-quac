@@ -20,11 +20,11 @@ synapse:
     name: Sample Clinical Database
     type: table
     description: Main GENIE reference of sample IDs
-#  version_date: 
-#    id: syn25837005
-#    name: Previous Upload Tracking
-#    type: table
-#    description: Date of previous upload by cohort
+  version_date: 
+    id: syn25837005
+    name: Previous Upload Tracking
+    type: table
+    description: Date of previous upload by cohort
   tables_view: 
     id: syn21446696
     name: Data table Information
