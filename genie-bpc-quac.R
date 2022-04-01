@@ -119,6 +119,10 @@ source("checklist.R")
 # synapse login
 syn <- synLogin(auth = synapse_auth)
 
+# update config
+config <- update_config_for_comparison_report(config)
+config <- update_config_for_release_report(config)
+
 # parameter messaging ----------------------------------------
 
 if (verbose) {
@@ -130,6 +134,10 @@ if (verbose) {
   if (report == "comparison") {
     print(glue("  - previous: {config$comparison[[cohort]]$previous}"))
     print(glue("  - current: {config$comparison[[cohort]]$current}"))
+  }
+  if (report == "release") {
+    print(glue("  - previous: {config$release[[cohort]]$previous}"))
+    print(glue("  - current: {config$release[[cohort]]$current}"))
   }
   print(glue("- level:\t\t{level}"))
   if (!is.null(number)) {
