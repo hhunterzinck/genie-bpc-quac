@@ -25,6 +25,11 @@ synapse:
     name: Previous Upload Tracking
     type: table
     description: Date of previous upload by cohort
+  version_release: 
+    id: syn27628075
+    name: Release Information
+    type: table
+    description: Release metadata and link to clinical data file folders.
   tables_view: 
     id: syn21446696
     name: Data table Information
