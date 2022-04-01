@@ -24,6 +24,49 @@ get_check_functions <- function(labels) {
   return(fxns)
 }
 
+# config updates ------------------
+
+#' Update the configuration global variables with information 
+#' from external references for the comparison report.
+#' 
+#' @param config Raw configuration object loaded from config.yaml
+#' @return Configuration object augmented by information for external references
+update_config_for_comparison_report <- function(config) {
+  # update for comparison reports
+  query <- glue("SELECT * FROM {config$synapse$version_date$id}")
+  comp <- as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))
+  
+  config$comparison <- list()
+  for (i in 1:nrow(comp)) {
+    config$comparison[[comp[i,"cohort"]]] <- list(previous = comp[i,"previous_date"], current = comp[i,"current_date"])
+  }
+  
+  return(config)
+}
+
+#' Update the configuration global variables with information 
+#' from external references for the release report.
+#' 
+#' @param config Raw configuration object loaded from config.yaml
+#' @return Configuration object augmented by information for external references
+update_config_for_release_report <- function(config) {
+  # update for release comparisons
+  query <- glue("SELECT * FROM {config$synapse$version_release$id} WHERE current = 'true'")
+  rel <- as.data.frame(synTableQuery(query, includeRowIdAndRowVersion = F))
+  
+  config$release <- list()
+  for (i in 1:nrow(rel)) {
+    previous <- NULL
+    if (!is.na(rel[i,"previous_version"])) {
+      previous <- glue("{rel[i,'previous_version']}-{rel[i,'previous_type']}")
+    }
+    current <- glue("{rel[i,'release_version']}-{rel[i,'release_type']}")
+    config$release[[rel[i,"cohort"]]] <- list(previous = previous, current = current)
+  }
+  
+  return(config)
+}
+
 # summary functions ------------------------------------
 
 #' Format output of check functions according to requested format.
