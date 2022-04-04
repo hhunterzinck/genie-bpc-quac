@@ -302,7 +302,7 @@ checks:
   {check_no}:
       implemented: {0 or 1 to indicate whether the check is currently implemented}
       deprecated: {0 or 1 to indicate whether the check is currently deprecated}
-      level: {error, warning, or fail to incidate check level}
+      level: {error, warning, or fail to indicate check level}
       label: {label for the check that should match the function name implementing the check}
       description: {human-readable description of what the check is examining}
       action: {human-readable description of the request to fix the issue detected by the check}
