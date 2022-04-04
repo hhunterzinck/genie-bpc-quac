@@ -291,3 +291,40 @@ Checks (8):
 - warning 39 (col_added): Column added since last upload. Please ensure that column was intentionally added.
 - warning 40 (file_added): File added since last release. Please ensure that file was intentionally added.
 ```
+
+## Adding new QA checks
+
+The QuAC framework is built in modular units for extensibility.  If a new QA check needs to be added, implement the following steps:
+
+1. In the `config.yaml` under the `checks` key, add another element using the next available index number.  The check element metadata should consist of the following information: 
+```
+checks:
+  {check_no}:
+      implemented: {0 or 1 to indicate whether the check is currently implemented}
+      deprecated: {0 or 1 to indicate whether the check is currently deprecated}
+      level: {error, warning, or fail to incidate check level}
+      label: {label for the check that should match the function name implementing the check}
+      description: {human-readable description of what the check is examining}
+      action: {human-readable description of the request to fix the issue detected by the check}
+```
+
+2. In `checklist.R`, implement the check as a function with the following format:
+```
+{label} <- function(cohort, site, report, output_format = "log") {
+  output <- NULL
+  {implementation}
+  output <- format_output({values}, 
+                            cohort = cohort, 
+                            site = site,
+                            output_format = output_format,
+                            column_name = {column_name}, 
+                            synid = {file synapse id},
+                            check_no = {check_no},
+                            infer_site = F)
+  return(output)
+}
+```
+
+3. Add the `check_no` to appopriate report check list `config.yaml` under the `report` key.  
+
+The above steps will incorporate the novel check into the program when the user requests the respective `report` and `level`.  
