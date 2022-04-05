@@ -4,7 +4,11 @@
 
 # global variables ------------------------------------
 
-config <- read_yaml("config.yaml")
+workdir = "."
+if (!file.exists("config.yaml")) {
+  workdir <- "/usr/local/src/myscripts"
+}
+config <- read_yaml(glue("{workdir}/config.yaml"))
 
 # list of functions ------------------------------------
 
