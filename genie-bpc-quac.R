@@ -11,13 +11,11 @@ library(glue)
 library(argparse)
 library(yaml)
 
-if (file.exists("config.yaml")) {
-  # local 
-  config <- read_yaml("config.yaml")
-} else {
-  # docker
-  config <- read_yaml("/usr/local/src/myscripts/config.yaml")
+workdir = "."
+if (!file.exists("config.yaml")) {
+  workdir <- "/usr/local/src/myscripts"
 }
+config <- read_yaml(glue("{workdir}/config.yaml"))
 
 choices_report <- sort(names(config$report))
 choices_number <- as.integer(names(config$checks)[which(unlist(lapply(config$checks, function(x) {if (x$implemented && !x$deprecated) T else F})))])
@@ -73,8 +71,8 @@ library(rjson)
 library(synapser)
 
 # functions
-source("fxns.R")
-source("checklist.R")
+source(glue("{workdir}/fxns.R"))
+source(glue("{workdir}/checklist.R"))
 
 # synapse login
 syn <- synLogin(auth = synapse_auth)
