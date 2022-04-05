@@ -10,7 +10,14 @@
 library(glue)
 library(argparse)
 library(yaml)
-config <- read_yaml("config.yaml")
+
+if (file.exists("config.yaml")) {
+  # local 
+  config <- read_yaml("config.yaml")
+} else {
+  # docker
+  config <- read_yaml("/usr/local/src/myscripts/config.yaml")
+}
 
 choices_report <- sort(names(config$report))
 choices_number <- as.integer(names(config$checks)[which(unlist(lapply(config$checks, function(x) {if (x$implemented && !x$deprecated) T else F})))])
