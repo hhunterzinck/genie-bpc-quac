@@ -1,7 +1,7 @@
 # GENIE BPC Quality Assurance Checklist
 
 ## Note
-Active version not transferred to Sage-Bionetworks organization: https://github.com/Sage-Bionetworks/genie-bpc-quac
+Active version now transferred to Sage-Bionetworks organization: https://github.com/Sage-Bionetworks/genie-bpc-quac
 
 ## Overview
 
