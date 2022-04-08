@@ -1,5 +1,8 @@
 # GENIE BPC Quality Assurance Checklist
 
+## Note
+Active version not transferred to Sage-Bionetworks organization: https://github.com/Sage-Bionetworks/genie-bpc-quac
+
 ## Overview
 
 This repository provides a command line tool for checking raw data, intermediate files, and final data releases for the GENIE Biopharma Collaborative (BPC) project.  
